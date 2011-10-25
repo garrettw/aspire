@@ -5,7 +5,7 @@
  * 
  * @since      0.1
  * @version    0.1
- * @author     Garrett Whitehorn <mail@garrettw.net>
+ * @author     Garrett Whitehorn
  * @package    Talkwork
  */
 

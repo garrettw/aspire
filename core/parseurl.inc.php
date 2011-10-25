@@ -89,5 +89,4 @@ if (strpos($_SERVER['REQUEST_URI'], '?') === FALSE) {
   // if there's a named-param conflict, redirect to a URL with the query-string param replacing the slashed param but the rest of the QS intact.
   // else, splice any slashed params onto the front of $_GET (no redirect)
 
-$path = NULL;
-$parts = NULL;
+unset($path, $parts);

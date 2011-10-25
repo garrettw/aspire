@@ -24,7 +24,7 @@ if (version_compare('5.1.2', PHP_VERSION,'>')) {
 
 
 require 'config.php';
-include DIR_CORE . 'Error.class.php'; // will go away in favor of exceptions
+include DIR_CORE . 'Error.class.php';
 require DIR_CORE . 'env-check.inc.php';
 require DIR_CORE . 'MySQLDB.class.php';
 require DIR_CORE . 'TWDB.class.php';
@@ -43,13 +43,13 @@ if (function_exists('mb_internal_encoding')
 session_name(string_to_slug($twdb->configs_core['site-name']));
 session_start();
 
+include DIR_CORE . 'Hooks.class.php';
+
 if (count($twdb->activeplugins) != 0) {
     foreach ($twdb->activeplugins as $plugin) {
         include_plugin_file($plugin . '/main.php');
     }
 }
-
-//include DIR_CORE . 'Hooks.class.php';
 
 //Hooks::run('before-controller');
 

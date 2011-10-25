@@ -16,7 +16,7 @@ class MySQLDB
     function __construct ($host,$user,$pass,$dbname) {
         $this->dbo = @new mysqli($host,$user,$pass,$dbname);
         if (mysqli_connect_errno()) {
-            Error::mysqli();    // replace with exception
+            $this->error();
         }
         if ($this->dbo->character_set_name() != 'utf8'
             && method_exists($this->dbo,'set_charset')
@@ -27,7 +27,7 @@ class MySQLDB
 
     function __destruct () {
         $this->dbo->close();
-        $this->dbo = null;
+        unset($this->dbo);
     }
   
     private function __clone () {
@@ -38,9 +38,21 @@ class MySQLDB
         // unserialization not allowed
     }
 
+    private function error ($q = null) {
+        if (mysqli_connect_errno()) {
+            $errno = mysqli_connect_errno();
+            $error = mysqli_connect_error();
+            $q = '';
+        } else {
+            $errno = $this->dbo->errno;
+            $error = $this->dbo->error;
+            $q = " in \"$q\"";
+        }
+        Error::send(500,E_FATAL,"MySQL #$errno: $error$q");
+    }
+
     function q ($q) {
-        $qr = $this->dbo->query($q)
-           or Error::mysqli($this->dbo,$q); // replace with exception
+        $qr = $this->dbo->query($q) or $this->error($q);
         return $qr;
     }
 

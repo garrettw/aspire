@@ -1,7 +1,7 @@
 <?php
 /**
  * File:  /core/TWDB.class.php
- * Adds TW-specific methods to database class
+ * Database class extended with TW-specific methods
  * 
  * @since      0.1
  * @version    0.1
@@ -61,10 +61,10 @@ class TWDB extends MySQLDB
   
     function get_plugins ($formodule='*',$active=1) {
         $q = 'SELECT `name` FROM `'.DB_TBLPREFIX.'plugins`';
-        $donewhere = false;
+        $donewhere = FALSE;
         if ($active != 2) {
             $q .= " WHERE `active` = $active";
-            $donewhere = true;
+            $donewhere = TRUE;
         }
         if ($formodule != '*') {
             $q .= ($donewhere ? ' AND ' : ' WHERE ')
@@ -77,5 +77,5 @@ class TWDB extends MySQLDB
             $tr[] = $e['name'];
         }
         return $tr;
-  }
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
- * File:  /core/TWDB.class.php
- * Database class extended with TW-specific methods
+ * File:  /core/TwDB.class.php
+ * Database class extended with Tw-specific methods
  * 
  * @since      0.1
  * @version    0.1
@@ -9,43 +9,57 @@
  * @package    Talkwork
  */
 
-class TWDB extends MySQLDB
+class TwDB extends MySQLDB
 {
-    public $configs_core;
+    public $configs;
     public $activeplugins;
     
     function __construct ($host,$user,$pass,$dbname) {
         parent::__construct($host,$user,$pass,$dbname);
-        $this->configs_core = $this->get_configs('core');
+        $this->get_configs();
         $this->activeplugins = $this->get_plugins();
     }
     
-    function get_configs ($module) {
-        $ta = $this->get('SELECT `key`,`value` FROM `'.DB_TBLPREFIX
-              ."config` WHERE `module` = '$module'"
-        );
+    function get_configs () {
+        $ta = $this->read('SELECT `module`,`key`,`value` FROM `'
+                .DB_TBLPREFIX.'config`');
         $tr = array();
         foreach ($ta as &$e) {
-            $tr[$e['key']] = $e['value'];
+            if ($e['key'] == 'shortcuts') {
+                $tr[$e['module']][$e['key']]
+                    = unserialize(base64_decode($e['value']));
+            } else {
+                $tr[$e['module']][$e['key']] = $e['value'];
+            }
         }
-        return $tr;
+        $this->configs = $tr;
     }
 
     function set_configs ($module,$configs) {
         $rv = TRUE;
         foreach ($configs as $key => $value) {
+            if ($key == 'shortcuts') {
+                $value = base64_encode(serialize($value));
+            }
             $rv = $rv & $this->set_config_value($module,$key,$value);
         }
         return $rv;
     }
   
     function get_config_value ($module,$key) {
-        return $this->get_one_field('SELECT `value` FROM `'.DB_TBLPREFIX
-               ."config` WHERE `module` = '$module' AND `key` = '$key'"
-        );
+        $value = $this->read_one_field('SELECT `value` FROM `'.DB_TBLPREFIX
+                 ."config` WHERE `module` = '$module' AND `key` = '$key'");
+        if ($key == 'shortcuts') {
+            return unserialize(base64_decode($value));
+        } else {
+            return $value;
+        }
     }
 
     function set_config_value ($module,$key,$value) {
+        if ($key == 'shortcuts') {
+            $value = base64_encode(serialize($value));
+        }
         if ($this->count('SELECT * FROM `'.DB_TBLPREFIX
             ."config` WHERE `module` = '$module' AND `key` = '$key'") == 0
         ) {
@@ -71,7 +85,7 @@ class TWDB extends MySQLDB
                   ."`for-modules` LIKE '$formodule'";
         }
     
-        $ta = $this->get($q);
+        $ta = $this->read($q);
         $tr = array();
         foreach ($ta as &$e) {
             $tr[] = $e['name'];

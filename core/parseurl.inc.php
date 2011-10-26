@@ -9,12 +9,16 @@
  * @package    Talkwork
  */
 
-// scheme: /[index.php/][module][/controller][/params][?query-string]
+// scheme: /[WS_ROOT][index.php/][module][/controller][/params][?query-string]
+//                               [or custom shortcut ]
 
 /* split slash-separated items into array,
     skipping the prefix of the installation root dir */
 $path = explode('/', substr($_SERVER['REQUEST_URI'], WS_ROOT_LENGTH));
 $parts = count($path);
+// and just for the sake of brevity, make some shortcut-variables
+$def_mod = &$twdb->configs['core']['default-module'];
+$def_ctrl = &$twdb->configs['core']['default-controller'];
 
 // detect 'index.php'; if not using or empty path, discard first part
 if (strpos($path[0], 'index.php') !== FALSE || empty($path[0])) {
@@ -27,42 +31,49 @@ if ($parts != 0 && empty($path[$parts-1])) {
 
 // Reconstruct full data set if parts are missing
 if (isset($path[0])) {
-    // if part 0 is not a valid module, use the default if it exists
-    if (!module_exists($path[0])) {
-        if (module_exists($twdb->configs_core['default-module'])) {
-            array_splice($path, 0, 0, $twdb->configs_core['default-module']);
-        } else {
-            // throw new fatal error
+    // first, check for shortcut
+    if (is_array($twdb->configs['core']['shortcuts'])) {
+        // $scuts = // finish later
+        if (in_array($path[0], $twdb->configs['core']['shortcuts'])) {
+            /* list($mod,$ctrl) = explode();
+             if () { // finish later */
+
         }
-    }
-    // if part 1 is not a valid controller, use the default if it exists
-    if (isset($path[1])) {
-        if (!controller_exists($path[0] . '/' . $path[1])) {
-            if (controller_exists($path[0] . '/' . $twdb->configs_core['default-controller'])) {
-                array_splice($path, 1, 0, $twdb->configs_core['default-controller']);
+    } else {
+        // if part 0 is not a valid module, use the default if it exists
+        if (!module_exists($path[0])) {
+            if (module_exists($def_mod)) {
+                array_splice($path, 0, 0, $def_mod);
             } else {
-                // throw new fatal error
+                // fatal error
             }
         }
-    } else {
-        $path[] = $twdb->configs_core['default-controller'];
+        // if part 1 is not a valid controller, use the default if it exists
+        if (isset($path[1])) {
+            if (!controller_exists($path[0] . '/' . $path[1])) {
+                if (controller_exists($path[0] . '/' . $def_ctrl)) {
+                    array_splice($path, 1, 0, $def_ctrl);
+                } else {
+                    // fatal error
+                }
+            }
+        } else {
+            $path[] = $def_ctrl;
+        }
     }
-} else if (module_exists($twdb->configs_core['default-module'])) {
-    if (controller_exists($twdb->configs_core['default-module'] . '/'
-        . $twdb->configs_core['default-controller'])
-    ) {
+} else if (module_exists($def_mod)) {
+    if (controller_exists($def_mod . '/' . $def_ctrl)) {
         // if neither of 0 & 1 are set, use both defaults if possible
-        $path = array($twdb->configs_core['default-module'],
-                      $twdb->configs_core['default-controller']);
+        $path = array($def_mod, $def_ctrl);
     } else {
-        // throw new fatal error
+        // fatal error
     }
 } else {
-    // throw new fatal error
+    // fatal error
 }
 // if there are no params, use the default
 if (!isset($path[2])) {
-    $path = array_merge($path,explode('/',$twdb->configs_core['default-params']));
+    $path = array_merge($path,explode('/',$twdb->configs['core']['default-params']));
 }
 
 

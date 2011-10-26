@@ -27,20 +27,20 @@ require 'config.php';
 include DIR_CORE . 'Error.class.php';
 require DIR_CORE . 'env-check.inc.php';
 require DIR_CORE . 'MySQLDB.class.php';
-require DIR_CORE . 'TWDB.class.php';
-    $twdb = new TWDB(DB_HOST,DB_USER,DB_PASS,DB_NAME);
+require DIR_CORE . 'TwDB.class.php';
+    $twdb = new TwDB(DB_HOST,DB_USER,DB_PASS,DB_NAME);
     define('CUR_THEME', (isset($_GET['theme'])) ? $_GET['theme']
-                                        : $twdb->configs_core['default-theme']);
+                                     : $twdb->configs['core']['default-theme']);
 require DIR_CORE . 'functions.inc.php';
 require DIR_CORE . 'parseurl.inc.php';
 require DIR_CORE . 'User.class.php';
 
 if (function_exists('mb_internal_encoding')
-    && !@mb_internal_encoding($twdb->configs_core['charset'])
+    && !@mb_internal_encoding($twdb->configs['core']['charset'])
 ) {
     mb_internal_encoding('UTF-8');
 }
-session_name(string_to_slug($twdb->configs_core['site-name']));
+session_name(string_to_slug($twdb->configs['core']['site-name']));
 session_start();
 
 include DIR_CORE . 'Hooks.class.php';

@@ -12,6 +12,7 @@
 class MySQLDB
 {
     private $dbo;
+    private $changes;
 
     function __construct ($host,$user,$pass,$dbname) {
         $this->dbo = @new mysqli($host,$user,$pass,$dbname);
@@ -23,6 +24,7 @@ class MySQLDB
         ) {
             $this->dbo->set_charset('utf8');
         }
+        $this->changes = array();
     }
 
     function __destruct () {
@@ -56,8 +58,12 @@ class MySQLDB
         return $qr;
     }
 
+    function insert ($table,$vs) { //todo: allow $vs to be an assoc array
+        $this->changes[] = 'INSERT INTO `'.DB_TBLPREFIX.$table."` $vs;";
+    }
+
     // pass a resource returned from q() and get the assoc array
-    function get_from_res ($qr) {
+    function read_from_res ($qr) {
         $ra = array();
         while ($row = $qr->fetch_assoc()) {
             $ra[] = $row;
@@ -67,8 +73,8 @@ class MySQLDB
     }
   
     // pass a query string and get the assoc array
-    function get ($q) {
-        return $this->get_from_res($this->q($q));
+    function read ($q) {
+        return $this->read_from_res($this->q($q));
     }
 
     // pass a resource returned from q() and get the count
@@ -81,19 +87,34 @@ class MySQLDB
         return $this->count_from_res($this->q($q));
     }
 
-    function get_one_row ($q) {
-        $ta = $this->get($q);
+    function read_one_row ($q) {
+        $ta = $this->read($q);
         if (count($ta) == 0) {
             return false;
         }
         return $ta[0];
     }
 
-    function get_one_field ($q) {
-        $ta = $this->get_one_row($q);
+    function read_one_field ($q) {
+        $ta = $this->read_one_row($q);
         if (!$ta) {
             return false;
         }
         return current($ta);
+    }
+
+    function update () {
+
+    }
+
+    function delete () {
+
+    }
+
+    function commit () { // I know this is bad -- I'll change it later
+        foreach ($this->changes as $qs) {
+            $this->q($q);
+        }
+        $this->changes = array();
     }
 }

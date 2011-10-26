@@ -13,7 +13,8 @@ I'd love any help I can get (partly because I just have a desire to work with
 somebody on this).
 
 Immediate goals:
- - 
+ - Finish support for custom URL shortcuts (e.g. /module/controller/ -> /mc/ )
+ - Finish pwhash() so functions.inc.php can be committed
 
 Long-term goals:
  - SSO support for bridging with many major CMSes

@@ -14,10 +14,11 @@ if (ini_get('display_errors') == '0') {
 error_reporting(E_ALL|E_STRICT);
 // end devel mode settings
 
-if (version_compare('5.1.2', PHP_VERSION,'>')) {
+$php_min_version = '5.3.2';
+if (version_compare($php_min_version, PHP_VERSION,'>')) {
     header('HTTP/1.0 500 Internal Server Error');
     $text = 'Your server is running PHP ' . PHP_VERSION
-          . ', but Talkwork requires at least version 5.1.2.';
+          . ', but Talkwork requires at least version ' . $php_min_version . '.';
     echo '<br><b>Fatal error</b>: ',$text;
     @trigger_error($text, E_FATAL);
 }

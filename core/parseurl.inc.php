@@ -9,8 +9,42 @@
  * @package    Talkwork
  */
 
-// scheme: /[WS_ROOT][index.php/][module][/controller][/params][?query-string]
-//                               [or custom shortcut ]
+/* scheme: /[WS_ROOT][index.php/][module][/controller][/params][?query-string]
+ *                               [or custom shortcut ]
+ *
+ * The idea here is that a verbose URI that tells Tw exactly what to do can be
+ * made less verbose if the desired module and/or controller to handle the request
+ * is the same as the default set in the database. For example, let's say we're
+ * running a site that is nothing more than a blog. The most explicit URI you
+ * could use for the home page would be:
+ *     /blog/show/0
+ * or even:
+ *     /blog/show/home-page-slug-is-here
+ * But if our default module is "blog", default controller is "show", and default
+ * params is "0", then you could access that same resource with a URI of,
+ * simply, "/".
+ *
+ * Now let's say you want to access some specific blog post. There are multiple
+ * ways you could do this:
+ *     /blog/show/1
+ *     /blog/1
+ *     /show/1
+ *     /1
+ * ...where you could also replace "1" with the post's slug on any of those, like:
+ *     /hello-world-first-post-woohoo
+ * 
+ * One last thing I do here is to take something like:
+ *     /form/show/contact/from=your@email.com
+ * and parse that section after the last slash into $_GET, so that this is true:
+ *     $_GET['from'] == 'your@email.com'
+ * Another way params can be tacked on is by index rather than by name, so:
+ *     /shop/list/123/color/white
+ * would be parsed such that:
+ *     $_GET[0] == '123'        - presumably the category ID we want to list
+ *     $_GET[1] == 'color'      - looks like we need to filter our results by color
+ *     $_GET[2] == 'white'      - and the color needs to be white
+ */
+
 
 /* split slash-separated items into array,
     skipping the prefix of the installation root dir */

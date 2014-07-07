@@ -11,13 +11,13 @@
 
 class Hooks
 {
-    static $hooks = array();
+    static $hooks = [];
   
     static function add ($hookname,$funcname) {
         if (isset(self::$hooks[$hookname])) {
             self::$hooks[$hookname][] = $funcname;
         } else {
-            self::$hooks[$hookname] = array($funcname);
+            self::$hooks[$hookname] = [$funcname];
         }
     }
   

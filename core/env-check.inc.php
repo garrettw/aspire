@@ -16,7 +16,7 @@ function error500($text) {
     @trigger_error($text, E_USER_ERROR);
 }
 
-$req_version = '5.3.2';
+$req_version = '5.4.0';
 if (version_compare($req_version, PHP_VERSION, '>')) {
     error500('Your server is running PHP ' . PHP_VERSION
           . ", but Talkwork requires at least version $req_version.");

@@ -24,7 +24,7 @@ class MySQLDB
         ) {
             $this->dbo->set_charset('utf8');
         }
-        $this->changes = array();
+        $this->changes = [];
     }
 
     function __destruct () {
@@ -64,7 +64,7 @@ class MySQLDB
 
     // pass a resource returned from q() and get the assoc array
     function read_from_res ($qr) {
-        $ra = array();
+        $ra = [];
         while ($row = $qr->fetch_assoc()) {
             $ra[] = $row;
         }
@@ -115,6 +115,6 @@ class MySQLDB
         foreach ($this->changes as $qs) {
             $this->q($q);
         }
-        $this->changes = array();
+        $this->changes = [];
     }
 }

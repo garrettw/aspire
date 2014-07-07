@@ -1,0 +1,7 @@
+{
+    "TwAutoloadRule": {
+        "file": "tw",
+        "includePath": "core",
+        "namespace": ""
+    }
+}

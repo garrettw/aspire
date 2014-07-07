@@ -10,6 +10,19 @@
  * @package    Talkwork
  */
 
+function error500($text) {
+    header('HTTP/1.0 500 Internal Server Error');
+    echo '<br><b>Fatal error</b>: ',$text;
+    @trigger_error($text, E_USER_ERROR);
+}
+
+$req_version = '5.3.2';
+if (version_compare($req_version, PHP_VERSION, '>')) {
+    error500('Your server is running PHP ' . PHP_VERSION
+          . ", but Talkwork requires at least version $req_version.");
+    
+}
+
 // Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests
 if (isset($_SERVER['SCRIPT_FILENAME'])
     && (strpos($_SERVER['SCRIPT_FILENAME'],'php.cgi') == strlen($_SERVER['SCRIPT_FILENAME'])-7)
@@ -29,9 +42,9 @@ if (empty($PHP_SELF)) {
 }
 
 if (!extension_loaded('mysql')) {
-	Error::send(500,E_FATAL,'Your PHP installation appears to be missing the MySQL extension which is required by Talkwork.');
+	error500('Your PHP installation appears to be missing the MySQL extension which is required by Talkwork.');
 }
 
 if (preg_match('/[^A-Za-z0-9_]/',DB_TBLPREFIX)) {
-    Error::send(500,E_FATAL,'DB_TBLPREFIX can only contain numbers, letters, and underscores.');
+    error500('DB_TBLPREFIX can only contain numbers, letters, and underscores.');
 }

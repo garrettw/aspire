@@ -1,4 +1,4 @@
-Talkwork is (read: will be) a website framework and CMS that runs on PHP 5,
+Talkwork is (read: will be) a website framework and CMS that runs on PHP 5.3.2+,
 MySQL, and Apache, and is grounded in modularity, ease of code navigation,
 versatility, and speed.
 

@@ -37,4 +37,26 @@ if (function_exists('mb_internal_encoding')
 ) {
     mb_internal_encoding('UTF-8');
 }
-session_name(string_to_slug($twdb->configs['core']['site-n
+session_name(string_to_slug($twdb->configs['core']['site-name']));
+session_start();
+
+if (count($twdb->activeplugins) != 0) {
+    foreach ($twdb->activeplugins as $plugin) {
+        include_plugin_file($plugin . '/main.php');
+    }
+}
+
+//Hooks::run('before-controller');
+
+load_controller(CUR_MC);
+
+//Hooks::run('after-controller');
+//Hooks::run('before-header');
+
+//Hooks::run('after-header');
+//Hooks::run('before-view');
+
+//Hooks::run('after-view');
+//Hooks::run('before-footer');
+
+//Hooks::run('after-footer');

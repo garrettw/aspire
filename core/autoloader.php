@@ -24,18 +24,18 @@ define('NAMESPACE_SEPARATOR', '\\');
  */
 
 class Autoloader {
-    private $rules = array();
+    private $rules = [];
     
     /**
      * When an instance of this class is created, its load method is
      * auto-registered with PHP.
      */
     public function __construct() {
-        spl_autoload_register(array($this, 'load'));
+        spl_autoload_register([$this, 'load']);
     }
     
     public function __destruct() {
-        spl_autoload_unregister(array($this, 'load'));
+        spl_autoload_unregister([$this, 'load']);
     }
     
     /**

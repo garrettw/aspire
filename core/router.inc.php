@@ -98,7 +98,7 @@ if (isset($path[0])) {
 } else if (module_exists($def_mod)) {
     if (controller_exists($def_mod . '/' . $def_ctrl)) {
         // if neither of 0 & 1 are set, use both defaults if possible
-        $path = array($def_mod, $def_ctrl);
+        $path = [$def_mod, $def_ctrl];
     } else {
         // fatal error
     }

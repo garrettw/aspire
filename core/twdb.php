@@ -23,7 +23,7 @@ class TwDB extends MySQLDB
     function get_configs () {
         $ta = $this->read('SELECT `module`,`key`,`value`,`serialized` FROM `'
                 .DB_TBLPREFIX.'config`');
-        $tr = array();
+        $tr = [];
         foreach ($ta as &$e) {
             if ($e['serialized']) {
                 $tr[$e['module']][$e['key']]
@@ -86,7 +86,7 @@ class TwDB extends MySQLDB
         }
     
         $ta = $this->read($q);
-        $tr = array();
+        $tr = [];
         foreach ($ta as &$e) {
             $tr[] = $e['name'];
         }

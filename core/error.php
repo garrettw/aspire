@@ -22,18 +22,18 @@ define('HTTP_INSVERR',  500);
 
 class Error
 {
-    private static $codes = array(HTTP_BADREQ   => 'Bad Request',
-                                  HTTP_UNAUTH   => 'Unauthorized',
-                                  HTTP_FORBID   => 'Forbidden',
-                                  HTTP_NOTFOUND => 'Not Found',
-                                  HTTP_INSVERR  => 'Internal Server Error',
-    );
-    private static $elevels = array(E_FATAL      => 'Fatal error',
-                                    E_NONFATAL   => 'Error',
-                                    E_SUGGESTION => 'FYI',
-    );
-    private static $sent = array();
-    private static $stack = array();
+    private static $codes = [HTTP_BADREQ   => 'Bad Request',
+                             HTTP_UNAUTH   => 'Unauthorized',
+                             HTTP_FORBID   => 'Forbidden',
+                             HTTP_NOTFOUND => 'Not Found',
+                             HTTP_INSVERR  => 'Internal Server Error',
+    ];
+    private static $elevels = [E_FATAL      => 'Fatal error',
+                               E_NONFATAL   => 'Error',
+                               E_SUGGESTION => 'FYI',
+    ];
+    private static $sent = [];
+    private static $stack = [];
     private static $stacksize = 0;
 
     static function send ($httpcode,$ecode,$text,$once=FALSE) {
@@ -51,7 +51,7 @@ class Error
     }
 
     static function push ($httpcode,$severity,$text,$once=FALSE) {
-        self::$stack[] = array($httpcode,$severity,$text,$once);
+        self::$stack[] = [$httpcode,$severity,$text,$once];
         self::$stacksize++;
     }
 

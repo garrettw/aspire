@@ -130,8 +130,8 @@ function insertLinkPath () {
 }
 
 function string_to_slug ($s) {
-    return strtolower(preg_replace(array('/[!"#\'\(\)\*,\-\.:;\?`‘’“”–— ´]/','/[ \/\\…·]/','/(\d+)%/','/&/','/(==|=)/'),
-                                   array('','-','$1-percent','and','equals'),$s));
+    return strtolower(preg_replace(['/[!"#\'\(\)\*,\-\.:;\?`‘’“”–— ´]/','/[ \/\\…·]/','/(\d+)%/','/&/','/(==|=)/'],
+                                   ['','-','$1-percent','and','equals'],$s));
 }
 
 function is_sql_clean ($s) {

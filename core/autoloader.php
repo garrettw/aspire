@@ -121,3 +121,68 @@ class PSR0AutoloadRule implements AutoloadRule {
         return $filePath != false;
     }
 }
+
+/**
+* And here's a PSR-4 rule you can load like this, for example:
+* $loader->addRule(new PSR4AutoloadRule('namespace', 'include/path',
+* new RegexPathRewriter('/pattern/', '/replacement/')));
+*/
+class PSR4AutoloadRule implements AutoloadRule
+{
+    private $namespace;
+    private $includePath;
+    private $pathRewriter;
+
+    public function __construct($ns, $includePath, PathRewriter $pr) {
+        $this->namespace = strtolower($ns);
+        $this->includePath = $includePath;
+        $this->pathRewriter = $pr;
+    }
+
+    public function loadClass($className) {
+        // remove leading backslash
+        $className = ltrim($className,'\\');
+    
+        // if this loader's namespace doesn't match that of the class to load
+        if (!empty($this->namespace)
+            && $this->namespace . NAMESPACE_SEPARATOR != substr(
+                $className, 0, strlen($this->namespace . NAMESPACE_SEPARATOR)
+            )
+        ) {
+            // then stop
+            return false;
+        }
+
+        $fileName = $this->includePath . DIRECTORY_SEPARATOR
+                   .$this->pathRewriter->getPath($className) . '.php';
+        
+        $filePath = stream_resolve_include_path($fileName);
+        if ($filePath) {
+            require_once $filePath;
+        }
+        return $filePath != false;
+    }
+}
+ 
+interface PathRewriter
+{
+    public function getPath($className);
+}
+ 
+class RegexPathRewriter implements PathRewriter
+{
+    private $pattern;
+    private $replacement;
+    private $limit;
+
+    public function __construct($p, $r, $l = -1) {
+        $this->pattern = $p;
+        $this->replacement = $r;
+        $this->limit = $l;
+    }
+
+    public function getPath($className) {
+        return preg_replace($this->pattern, $this->replacement,
+            $className, $this->limit)
+    }
+}

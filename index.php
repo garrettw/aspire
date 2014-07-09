@@ -7,22 +7,19 @@
  * @package    Talkwork
  */
 
-// REMOVE from here to END in production environment
+// REMOVE from here to 'END' in production environment
 if (ini_get('display_errors') == '0') {
     ini_set('display_errors', '1');
 }
 error_reporting(E_ALL|E_STRICT);
 // END
 
-// Configuration constants
-require 'config.php';
-// Environment checks
-require DIR_CORE . 'env-check.inc.php';
-
-// Autoloader
+require 'config.php'; // Define configuration constants
+require DIR_CORE . 'env-check.inc.php'; // Run environment checks
 require DIR_CORE . 'autoloader.php';
+
 $loader = new Autoloader();
-$loader->registerLibrary('core');
+$loader->registerLibrary('core'); // talkwork lives in 'core' dir
 
 // create DB connection instance
 $twdb = new TwDB(DB_HOST,DB_USER,DB_PASS,DB_NAME);
@@ -51,12 +48,6 @@ if (count($twdb->activeplugins) != 0) {
 load_controller(CUR_MC);
 
 //Hooks::run('after-controller');
-//Hooks::run('before-header');
-
-//Hooks::run('after-header');
 //Hooks::run('before-view');
 
 //Hooks::run('after-view');
-//Hooks::run('before-footer');
-
-//Hooks::run('after-footer');

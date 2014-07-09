@@ -101,17 +101,17 @@ function pwhash ($password, $salt = null) {
     return crypt($password, $salt);
 }
 
-function pwstrength ($pw, $options = array()) {
-    $errors = array();
+function pwstrength ($pw, $options = []) {
+    $errors = [];
     
     // Default options
-    $defaults = array(
+    $defaults = [
         "minChars"			=> 8,		// Minimum characters a password must have
         "numRequired"		=> true,	// At least one number is required
         "lcaseRequired"		=> true,	// At least one lower-case letter must be required
         "ucaseRequired"		=> true,	// At least one upper-case letter must be required
         "specialRequired"	=> true,	// There must be at least one special character (Non-alpha numeric)
-    );
+    ];
     
     // Merge the custom $options with the $defaults
     $opts = array_merge($defaults, $options);

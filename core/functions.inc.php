@@ -97,46 +97,46 @@ function include_plugin_file ($f) {
 }
 
 function pwhash ($password, $salt = null) {
-	$salt = '$5$' . (isset($salt) && !is_null($salt) ? $salt : uniqid()) . '$';
-	return crypt($password, $salt);
+    $salt = '$5$' . ((isset($salt)) ? $salt : uniqid()) . '$';
+    return crypt($password, $salt);
 }
 
 function pwstrength ($pw, $options = array()) {
-	$errors = array();
-	
-	// Default options
-	$defaults = array(
-		"minChars"			=> 8,		// Minimum characters a password must have
-		"numRequired"		=> true,	// At least one number is required
-		"lcaseRequired"		=> true,	// At least one lower-case letter must be required
-		"ucaseRequired"		=> true,	// At least one upper-case letter must be required
-		"specialRequired"	=> true,	// There must be at least one special character (Non-alpha numeric)
-	);
-	
-	// Merge the custom $options with the $defaults
-	$opts = array_merge($defaults, $options);
-	
-	// Check the password's length
-	if (mb_strlen($pw) < $opts['minChars'])
-		$errors[] = "Your password must contain at least " . $opts['minChars'] . " characters or more";
-
-	// Check if the password contains a number
-	if ($opts['numRequired'] === true && !preg_match("/[0-9]+/i", $pw))
-		$errors[] = "Your password must contain at least one number";
-
-	// Check if password contains a lower case letter
-	if ($opts['lcaseRequired'] === true && !preg_match("/[a-z]+/i", $pw))
-		$errors[] = "Your password must contain at least one lower case character";
-
-	// Check if password contains an upper case letter
-	if ($opts['ucaseRequired'] === true && !preg_match("/[A-Z]+/i", $pw))
-		$errors[] = "Your password must contain at least one upper case character";
-
-	// Check if password contains a special character (non-alphanumerical)
-	if ($opts['specialRequired'] === true && !preg_match("/[^A-Za-z0-9]+/i", $pw))
-		$errors[] = "Your password must contain at least one special character";
-
-	return $errors;
+    $errors = array();
+    
+    // Default options
+    $defaults = array(
+        "minChars"			=> 8,		// Minimum characters a password must have
+        "numRequired"		=> true,	// At least one number is required
+        "lcaseRequired"		=> true,	// At least one lower-case letter must be required
+        "ucaseRequired"		=> true,	// At least one upper-case letter must be required
+        "specialRequired"	=> true,	// There must be at least one special character (Non-alpha numeric)
+    );
+    
+    // Merge the custom $options with the $defaults
+    $opts = array_merge($defaults, $options);
+    
+    // Check the password's length
+    if (mb_strlen($pw) < $opts['minChars'])
+        $errors[] = "Your password must contain at least " . $opts['minChars'] . " characters or more";
+    
+    // Check if the password contains a number
+    if ($opts['numRequired'] === true && !preg_match("/[0-9]+/i", $pw))
+        $errors[] = "Your password must contain at least one number";
+    
+    // Check if password contains a lower case letter
+    if ($opts['lcaseRequired'] === true && !preg_match("/[a-z]+/i", $pw))
+        $errors[] = "Your password must contain at least one lower case character";
+    
+    // Check if password contains an upper case letter
+    if ($opts['ucaseRequired'] === true && !preg_match("/[A-Z]+/i", $pw))
+        $errors[] = "Your password must contain at least one upper case character";
+    
+    // Check if password contains a special character (non-alphanumerical)
+    if ($opts['specialRequired'] === true && !preg_match("/[^A-Za-z0-9]+/i", $pw))
+        $errors[] = "Your password must contain at least one special character";
+    
+    return $errors;
 }
 
 function format_page_title ($breadcrumbs) { // in order from least to most specific

@@ -29,13 +29,13 @@ echo "<hr />";
 
 
 // Testing with custom options
-$options = array(
+$options = [
 	"minChars"			=> 12,		// Minimum characters a password must have
 	"numRequired"		=> true,	// At least one number is required
 	"lcaseRequired"		=> false,	// At least one lower-case letter must be required
 	"ucaseRequired"		=> false,	// At least one upper-case letter must be required
 	"specialRequired"	=> false,	// There must be at least one special character (Non-alpha numeric)
-);
+];
 
 var_dump([
 	"No password" => pwstrength("", $options),
@@ -53,13 +53,13 @@ var_dump([
 echo "<hr />";
 
 // Testing a password with little requirements
-$options = array(
+$options = [
 	"minChars"			=> 6,		// Minimum characters a password must have
 	"numRequired"		=> false,	// At least one number is required
 	"lcaseRequired"		=> false,	// At least one lower-case letter must be required
 	"ucaseRequired"		=> false,	// At least one upper-case letter must be required
 	"specialRequired"	=> false,	// There must be at least one special character (Non-alpha numeric)
-);
+];
 
 var_dump([
 	"No password" => pwstrength("", $options),

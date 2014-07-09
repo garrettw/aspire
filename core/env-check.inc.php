@@ -23,6 +23,10 @@ if (version_compare($req_version, PHP_VERSION, '>')) {
     
 }
 
+if (preg_match('/[^A-Za-z0-9_]/',DB_TBLPREFIX)) {
+    error500('DB_TBLPREFIX can only contain numbers, letters, and underscores.');
+}
+
 // Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests
 if (isset($_SERVER['SCRIPT_FILENAME'])
     && (strpos($_SERVER['SCRIPT_FILENAME'],'php.cgi') == strlen($_SERVER['SCRIPT_FILENAME'])-7)
@@ -39,12 +43,4 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'php.cgi') !== false) {
 $PHP_SELF = $_SERVER['PHP_SELF'];
 if (empty($PHP_SELF)) {
 	$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace('/(\?.*)?$/','',$_SERVER['REQUEST_URI']);
-}
-
-if (!extension_loaded('mysql')) {
-	error500('Your PHP installation appears to be missing the MySQL extension which is required by Talkwork.');
-}
-
-if (preg_match('/[^A-Za-z0-9_]/',DB_TBLPREFIX)) {
-    error500('DB_TBLPREFIX can only contain numbers, letters, and underscores.');
 }

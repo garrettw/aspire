@@ -11,7 +11,7 @@
                    .strtolower($className) . '.php';
         $filePath = stream_resolve_include_path($fileName);
         if ($filePath) {
-            require $filePath;
+            require_once $filePath;
         }
         return $filePath != false;
     }

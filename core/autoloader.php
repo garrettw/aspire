@@ -44,7 +44,8 @@ class Autoloader {
      */
     public function registerLibrary($dir) {
         $autoloaders = json_decode(
-                file_get_contents($dir . DIRECTORY_SEPARATOR . 'autoload.json'), true
+                file_get_contents($dir . DIRECTORY_SEPARATOR . 'autoload.json'),
+                true
         );
         foreach ($autoloaders as $name => $params) {
             require_once $dir . DIRECTORY_SEPARATOR . $params['file']
@@ -58,8 +59,8 @@ class Autoloader {
      * Or call this directly on a rule object of your creation to add it
      * programmatically
      */
-    public function addRule(AutoloadRule $autoloadRule) {
-        $this->rules[] = $autoloadRule;
+    public function addRule(AutoloadRule $rule) {
+        $this->rules[] = $rule;
     }
     
     public function load($className) {

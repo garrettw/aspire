@@ -21,22 +21,26 @@ class TwDB extends MySQLDB
     }
     
     function get_configs () {
-        $ta = $this->read('SELECT `module`,`key`,`value`,`serialized` FROM `'
-                .DB_TBLPREFIX.'config`');
+        // disabling some things until i fix the db structure.
+        // $ta = $this->read('SELECT `module`,`key`,`value`,`serialized` FROM `'
+        //         .DB_TBLPREFIX.'config`');
+        $ta = $this->read('SELECT `module`,`key`,`value` FROM `'.DB_TBLPREFIX
+            .'config`'
+        );
         $tr = [];
         foreach ($ta as &$e) {
-            if ($e['serialized']) {
-                $tr[$e['module']][$e['key']]
-                    = unserialize(base64_decode($e['value']));
-            } else {
+            // if ($e['serialized']) {
+            //     $tr[$e['module']][$e['key']]
+            //         = unserialize(base64_decode($e['value']));
+            // } else {
                 $tr[$e['module']][$e['key']] = $e['value'];
-            }
+            // }
         }
         $this->configs = $tr;
     }
 
     function set_configs ($module,$configs) {
-        $rv = TRUE;
+        $rv = true;
         foreach ($configs as $key => $value) {
             if ($key == 'shortcuts') {
                 $value = base64_encode(serialize($value));

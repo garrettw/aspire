@@ -1,5 +1,5 @@
-Talkwork is (read: will be) a website framework and CMS that runs on PHP 5.3.2+,
-MySQL, and Apache, and is grounded in modularity, ease of code navigation,
+Talkwork is (read: will be) a website framework and CMS that runs on PHP 5.4+
+and Apache, and is grounded in modularity, ease of code navigation,
 versatility, and speed.
 
 This project is in the pre-alpha stage of development (i.e. in the womb).
@@ -13,7 +13,6 @@ I'd love any help I can get (partly because I just have a desire to work with
 somebody on this).
 
 Immediate goals:
- - Finish pwhash() so functions.inc.php can be committed
  - Move URL shortcut code out to a plugin, and work on plugin infrastructure
  - Move from mysqli to PDO, and then add Doctrine DBAL support
 

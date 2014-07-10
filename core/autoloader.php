@@ -44,14 +44,16 @@ class Autoloader {
      */
     public function registerLibrary($dir) {
         $autoloaders = json_decode(
-                file_get_contents($dir . DIRECTORY_SEPARATOR . 'autoload.json'),
-                true
+            file_get_contents($dir . DIRECTORY_SEPARATOR . 'autoload.json'),
+            true
         );
         foreach ($autoloaders as $name => $params) {
             require_once $dir . DIRECTORY_SEPARATOR . $params['file']
                 . '.autoloadrule.php'
             ;
-            $this->addRule(new $name($params['namespace'], $params['includePath']));
+            $this->addRule(new $name($params['namespace'], 
+                $dir . DIRECTORY_SEPARATOR . $params['includePath']
+            ));
         }
     }
     

@@ -18,8 +18,8 @@ $loader->registerLibrary(TW_DIR); // where autoload.json lives
 function something (MySQLDB $db) {
     define('CUR_THEME', (isset($_GET['theme'])) ? $_GET['theme']
             : $db->configs['core']['default-theme']);
-    require TW_DIR . 'functions.inc.php';
-    require TW_DIR . 'router.inc.php';
+    require TW_DIR . '/functions.inc.php';
+    require TW_DIR . '/router.inc.php';
     
     if (function_exists('mb_internal_encoding')
         && !@mb_internal_encoding($db->configs['core']['charset'])

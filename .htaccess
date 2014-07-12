@@ -1,4 +1,8 @@
 RewriteEngine on
+
+# Rewrite all access to /core/ to index.php
+RewriteRule ^core(.+?) index.php [QSA,NC,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /core/index.php [L]
+RewriteRule . index.php [L]

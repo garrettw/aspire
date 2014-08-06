@@ -8,23 +8,23 @@
  * @package    Talkwork
  */
 
-function shortcut_exists ($s) {
+function shortcut_exists($s)
+{
     
 }
 
-function module_exists ($m) {
+function module_exists($m)
+{
     return is_dir(DIR_MODULES.$m);
 }
 
-function model_exists ($mm) {
+function model_exists($mm)
+{
     return file_exists(DIR_MODULES."$mm.model.php");
 }
 
-function controller_exists ($mc) {
-    return file_exists(DIR_MODULES."$mc.ctrl.php");
-}
-
-function check_shortcut ($s) {
+function check_shortcut($s)
+{
     if (!shortcut_exists($s)) {
         Error::send(404,E_FATAL,"Shortcut '$s' not found.");
     }
@@ -33,31 +33,29 @@ function check_shortcut ($s) {
     check_controller($ss[1]);
 }
 
-function check_module ($m) {
+function check_module($m)
+{
     if (!module_exists($m)) {
         Error::send(404,E_FATAL,"Module '$m' not found.");
     }
 }
 
-function check_model ($mm) {
+function check_model($mm)
+{
     if (!model_exists($mm)) {
         Error::send(404,E_FATAL,"Model '$mm' not found."); // substr($m,0,strpos($m,'/'))
     }
 }
 
-function check_controller ($mc) {
-    if (!controller_exists($mc)) {
-        Error::send(404,E_FATAL,"Controller '$mc' not found.");
-    }
-}
-
-function check_class ($c) {
+function check_class($c)
+{
     if (!class_exists($c)) {
         Error::send(500,E_FATAL,"Class '$c' not defined.");
     }
 }
 
-function check_theme_file ($f) {
+function check_theme_file($f)
+{
     if (file_exists($f)) {
         return true;
     } else {
@@ -65,43 +63,34 @@ function check_theme_file ($f) {
     }
 }
 
-function load_model ($mm) {
+function load_model($mm)
+{
     check_module($mm);
     include DIR_MODULES . $mm . '.model.php';
 }
 
-function load_controller ($c) {
-    check_controller($c);
-    include DIR_MODULES . $c . '.ctrl.php';
-}
-
-function load_view ($mc) {
+function load_view($mc)
+{
     load_theme_file('config');
     load_theme_file($mc . '.view');
 }
 
-function load_theme_file ($f) {
+function load_theme_file($f)
+{
     $path = DIR_THEMES . CUR_THEME . '/' . $f . '.php';
     if (check_theme_file($path)) {
         include $path;
     }
 }
 
-function include_plugin_file ($f) {
-    $f = DIR_PLUGINS . $f;
-    if (file_exists($f)) {
-        include $f;
-    } else {
-        Error::send(200,E_NONFATAL,"Plugin file '$f' not found.");
-    }
-}
-
-function pwhash ($password, $salt = null) {
+function pwhash($password, $salt = null)
+{
     $salt = '$5$' . ((isset($salt)) ? $salt : uniqid()) . '$';
     return crypt($password, $salt);
 }
 
-function pwstrength ($pw, $options = []) {
+function pwstrength($pw, $options = [])
+{
     $errors = [];
     
     // Default options
@@ -139,7 +128,8 @@ function pwstrength ($pw, $options = []) {
     return $errors;
 }
 
-function format_page_title ($breadcrumbs) { // in order from least to most specific
+function format_page_title($breadcrumbs)
+{ // in order from least to most specific
     global $twdb;
     if ($twdb->configs_core['site-name-in-title'] == 'last') {
         $breadcrumbs = array_reverse($breadcrumbs);
@@ -154,28 +144,28 @@ function format_page_title ($breadcrumbs) { // in order from least to most speci
     return $output;
 }
 
-function insertLinkPath () {
+function insertLinkPath()
+{
     return (($GLOBALS['twdb']->configs_core['sef-urls'] == 'true') ? 'index.php/' : '');
 }
 
-function string_to_slug ($s) {
-    return strtolower(preg_replace(['/[!"#\'\(\)\*,\-\.:;\?`‘’“”–— ´]/','/[ \/\\…·]/','/(\d+)%/','/&/','/(==|=)/'],
-                                   ['','-','$1-percent','and','equals'],$s));
-}
-
-function is_sql_clean ($s) {
+function is_sql_clean($s)
+{
     return preg_match('/[`\']/',$s);
 }
 
-function sql_clean ($s) {
+function sql_clean($s)
+{
     return preg_replace('/[`\']/','',$s);
 }
 
-function loadfile ($file,$nl = "\n") {
+function loadfile($file,$nl = "\n")
+{
     return explode($nl,file_get_contents($file));
 }
 
-function writefile ($path,$content,&$errmsg,$verify = false,$timeLimit = 2,$nl = "\n",$endTime = null) {
+function writefile($path,$content,&$errmsg,$verify = false,$timeLimit = 2,$nl = "\n",$endTime = null)
+{
     if (is_array($content)) {
         $content = implode($nl,$content); // force $content to be a string
     }
@@ -239,6 +229,7 @@ function writefile ($path,$content,&$errmsg,$verify = false,$timeLimit = 2,$nl =
     return true;
 }
 
-function strip_html($string) {
+function strip_html($string)
+{
 	return htmlentities($string, ENT_QUOTES | ENT_IGNORE, "UTF-8");
 }

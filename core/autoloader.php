@@ -15,26 +15,38 @@ define('NAMESPACE_SEPARATOR', '\\');
  * 
  * {
  *     "PSR0AutoloadRule": {
- *         "file": "psr0",
  *         "includePath": "",
  *         "namespace": ""
  *     }
  * }
  * 
+ * Here, the class "PSR0AutoloadRule" would be loaded from psr0autoloadrule.php
+ * which must be in the same directory as the autoload.json file.
+ * 
+ * The "includePath" element gives the rule a base path that all of its
+ * includes will share. If empty, it defaults to the same directory
+ * as autoload.json.
+ * 
+ * "namespace", if specified, should limit the rule to only apply to classes
+ * under a certain namespace (or potentially a sub-namespace of the one
+ * specified, depending on the implementation in the rule class).
  */
 
-class Autoloader {
+class Autoloader
+{
     private $rules = [];
     
     /**
      * When an instance of this class is created, its load method is
      * auto-registered with PHP.
      */
-    public function __construct() {
+    public function __construct()
+    {
         spl_autoload_register([$this, 'load']);
     }
     
-    public function __destruct() {
+    public function __destruct()
+    {
         spl_autoload_unregister([$this, 'load']);
     }
     
@@ -42,14 +54,15 @@ class Autoloader {
      * Once you create an Autoloader instance, call this on a directory to
      * pull in the necessary rules for that library
      */
-    public function registerLibrary($dir) {
+    public function registerLibrary($dir)
+    {
         $autoloaders = json_decode(
             file_get_contents($dir . DIRECTORY_SEPARATOR . 'autoload.json'),
             true
         );
         foreach ($autoloaders as $name => $params) {
-            require_once $dir . DIRECTORY_SEPARATOR . $params['file']
-                . '.autoloadrule.php'
+            require_once
+                $dir . DIRECTORY_SEPARATOR . strtolower($name) . '.php'
             ;
             $this->addRule(new $name($params['namespace'], 
                 $dir . DIRECTORY_SEPARATOR . $params['includePath']
@@ -61,11 +74,13 @@ class Autoloader {
      * Or call this directly on a rule object of your creation to add it
      * programmatically
      */
-    public function addRule(AutoloadRule $rule) {
+    public function addRule(AutoloadRule $rule)
+    {
         $this->rules[] = $rule;
     }
     
-    public function load($className) {
+    public function load($className)
+    {
         foreach ($this->rules as $rule) {
             if ($rule->loadClass($className)) {
                 return;
@@ -74,7 +89,8 @@ class Autoloader {
     }
 }
 
-interface AutoloadRule {
+interface AutoloadRule
+{
     public function loadClass($className);
 }
 
@@ -83,16 +99,19 @@ interface AutoloadRule {
  * instead of registerLibrary() if you want. Like so:
  * $loader->addRule(new PSR0AutoloadRule('namespace', 'include/path'));
  */
-class PSR0AutoloadRule implements AutoloadRule {
+class PSR0AutoloadRule implements AutoloadRule
+{
     private $namespace;
     private $includePath;
     
-    public function __construct($ns, $includePath) {
+    public function __construct($ns, $includePath)
+    {
         $this->namespace = strtolower($ns);
         $this->includePath = $includePath;
     }
     
-    public function loadClass($className) {
+    public function loadClass($className)
+    {
         // remove any leading backslash or underscore and convert to lowercase
         $className = strtolower(ltrim($className,'\\_'));
         
@@ -112,7 +131,7 @@ class PSR0AutoloadRule implements AutoloadRule {
         if ($lastNsPos = strrpos($className, NAMESPACE_SEPARATOR)) {
             $namespace = substr($className, 0, $lastNsPos);
             $className = substr($className, $lastNsPos + 1);
-            $fileName  = strtr($namespace, NAMESPACE_SEPARATOR, DIRECTORY_SEPARATOR)
+            $fileName .= strtr($namespace, NAMESPACE_SEPARATOR, DIRECTORY_SEPARATOR)
                         .DIRECTORY_SEPARATOR;
         }
         
@@ -139,13 +158,15 @@ class PSR4AutoloadRule implements AutoloadRule
     private $includePath;
     private $pathRewriter;
     
-    public function __construct($ns, $includePath, callable $pr) {
+    public function __construct($ns, $includePath, callable $pr)
+    {
         $this->namespace = $ns;
         $this->includePath = $includePath;
         $this->pathRewriter = $pr;
     }
     
-    public function loadClass($className) {
+    public function loadClass($className)
+    {
         // remove leading backslash
         $className = ltrim($className,'\\');
         

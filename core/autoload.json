@@ -1,7 +1,6 @@
 {
     "TwAutoloadRule": {
-        "file": "tw",
-        "includePath": "",
-        "namespace": ""
+        "includePath": "lib",
+        "namespace": "Talkwork"
     }
 }

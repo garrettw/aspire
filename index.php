@@ -1,13 +1,5 @@
 <?php
 
-// REMOVE from here to 'END' in production environment
-if (ini_get('display_errors') == '0') {
-    ini_set('display_errors', '1');
-}
-error_reporting(E_ALL|E_STRICT);
-// END
-
-
 require 'tw-config.php'; // Define configuration constants
 require 'core/tw-init.php';
 

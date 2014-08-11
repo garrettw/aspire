@@ -35,3 +35,5 @@ define('TW_DIR', __DIR__);
 require TW_DIR . '/autoloader.php';
 $loader = new Autoloader();
 $loader->registerLibrary(TW_DIR); // where autoload.json lives
+
+new Talkwork\ErrorHandler();

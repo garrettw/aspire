@@ -18,7 +18,7 @@ class MySQLDB
 
     function __construct($host,$user,$pass,$dbname)
     {
-        $this->dbo = @new mysqli($host,$user,$pass,$dbname);
+        $this->dbo = new \mysqli($host,$user,$pass,$dbname);
         if (mysqli_connect_errno()) {
             $this->error();
         }

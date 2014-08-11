@@ -145,14 +145,15 @@ class PSR0AutoloadRule implements AutoloadRule
 }
 
 /**
- * And here's a PSR-4 rule you can load like this, for example:
- * $loader->addRule(new PSR4AutoloadRule('namespace', 'include/path',
+ * And here's a rule that wraps your own custom callback rewriting function.
+ * This can be implemented in a way that is PSR-4-compatible. Load it like this:
+ * $loader->addRule(new RewriterAutoloadRule('namespace', 'include/path',
  *     function ($className) {
  *         return preg_replace('/pattern/', '/replacement/', $className);
  *     }
  * ));
  */
-class PSR4AutoloadRule implements AutoloadRule
+class RewriterAutoloadRule implements AutoloadRule
 {
     private $namespace;
     private $includePath;

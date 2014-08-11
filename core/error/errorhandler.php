@@ -59,7 +59,9 @@ $message .= $exception->getMessage();
 			border-bottom: 1px solid #FFFFFF;
 		}
 		table.trace-args {
+			background: #FFFFFF;
 			width: 100%;
+			margin-top: 24px;
 		}
 		table.trace-args tr:nth-child(even) td {
 			background: #F2F2F2;
@@ -101,10 +103,9 @@ $message .= $exception->getMessage();
 			$traceFunction = (isset($trace['class']) && !empty($trace['class']) ? $trace['class'] . $trace['type'] : "") 
 								. $trace['function'];
 		
-			echo "<div class=\"trace\"><em><strong>" .
-				$traceFunction . "</strong></em>" .
+			echo "<div class=\"trace\"><em><strong>" . $traceFunction . "</strong></em>" .
 				(isset($trace['file']) && !empty($trace['file']) ? " at <em>" . $trace['file'] .
-					" line " . $trace['line'] . "</em>" : "") . "</div>";
+					" line " . $trace['line'] . "</em>" : "");
 			
 			// If the trace has any arguments, loop through them
 			if (isset($trace['args']) && !empty($trace['args']) && is_array($trace['args'])) {
@@ -129,7 +130,7 @@ $message .= $exception->getMessage();
 					</tr>";
 				}
 				
-				echo "</table>";
+				echo "</table></div>";
 			} else {
 				echo "<p><em>No arguments passed</em></p>";
 			}

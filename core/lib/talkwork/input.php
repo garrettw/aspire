@@ -14,11 +14,13 @@ abstract class Input
 {
     private $args;
     private $data;
+    private $method;
     
-    public function __construct($args, $data)
+    public function __construct($args, $data, $method = 'cli')
     {
         $this->args = $args;
         $this->data = $data;
+        $this->method = $method;
     }
     
     public function getArgs()
@@ -29,6 +31,11 @@ abstract class Input
     public function getData()
     {
         return $this->data;
+    }
+    
+    public function getMethod()
+    {
+        return $this->method;
     }
     
     public function arg($i)

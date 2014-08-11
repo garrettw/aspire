@@ -19,3 +19,5 @@ define('DB_TBLPREFIX', '');
 // directory of installation, as accessed from the Internet - both slashes required
 define('WS_ROOT', '/');
 define('WS_ROOT_LENGTH', strlen(WS_ROOT));
+
+define('TW_DEBUGMODE', true);

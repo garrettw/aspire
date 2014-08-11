@@ -12,8 +12,6 @@ namespace Talkwork;
 
 class HTTPInput extends Input
 {
-    private $method;
-    
     public function __construct($args, $data)
     {
         // Strip the query string out of the raw request
@@ -23,9 +21,7 @@ class HTTPInput extends Input
             $q = substr($q, 0, $qpos);
         }
         
-        parent::__construct([0 => $q] + $args, $data);
-        
-        $this->method = $_SERVER['REQUEST_METHOD'];
+        parent::__construct([0 => $q] + $args, $data, $_SERVER['REQUEST_METHOD']);
         
         // Fix empty PHP_SELF
     	$_SERVER['PHP_SELF'] = $_SERVER['PHP_SELF'] ?: $q;

@@ -20,8 +20,8 @@ class TwAutoloadRule implements AutoloadRule
     
     public function loadClass($className)
     {
-        // remove leading backslash
-        $className = ltrim($className,'\\');
+        // remove leading backslash & convert to lowercase
+        $className = strtolower(ltrim($className,'\\'));
         
         // if this loader's namespace doesn't match that of the class to load
         if (!empty($this->namespace)
@@ -43,7 +43,7 @@ class TwAutoloadRule implements AutoloadRule
                         .DIRECTORY_SEPARATOR;
         }
         
-        $fileName .= strtolower($className) . '.php';
+        $fileName .= $className . '.php';
         $filePath = stream_resolve_include_path($fileName);
         if ($filePath) {
             require_once $filePath;

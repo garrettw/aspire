@@ -27,6 +27,8 @@ class ErrorHandler {
 	 * Handles exceptions
 	 */
 	public function handleException($exception) {
+		header('HTTP/1.1 500 Internal Server Error');
+	
 		// If debug mode is enabled, display the debug page
 		if (defined('TW_DEBUGMODE') && TW_DEBUGMODE) {
 			require TW_DIR . "/error/errorhandler.php";
@@ -56,6 +58,9 @@ class ErrorHandler {
 			$lastError['file'], $lastError['line']);
 	}
 	
+	/**
+	 *  Gets the error message name by the code
+	 */
 	public static function getErrorName($errorCode) {
 		switch ($errorCode) {
 			case E_ERROR:

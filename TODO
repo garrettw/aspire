@@ -1,3 +1,8 @@
 todo:
 
-
+- write the new Router
+- ditch existing Error class for a proper Exception class
+- move all database-y stuff to use Doctrine DBAL...
+- ... once I get its position in the directory structure right.
+- do something with that old Hooks class, if I even need it.do
+- write more tests?

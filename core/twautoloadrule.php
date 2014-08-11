@@ -14,7 +14,7 @@ class TwAutoloadRule implements AutoloadRule
     
     public function __construct($ns, $includePath)
     {
-        $this->namespace = strtolower($ns);
+        $this->namespace = $ns;
         $this->includePath = $includePath;
     }
     

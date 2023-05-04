@@ -1,0 +1,36 @@
+// https://aka.ms/devcontainer.json
+{
+	"name": "Existing Docker Compose (Extend)",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "aspire",
+	"workspaceFolder": "/var/www/html",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"formulahendry.auto-complete-tag",
+				"alefragnani.bookmarks",
+				"predrag-nikolic.php-class-helper",
+				"ikappas.composer",
+				"eamodio.gitlens",
+				"nhoizey.gremlins",
+				"oderwat.indent-rainbow",
+				"jakebathman.mysql-syntax",
+				"xdebug.php-pack",
+				"neilbrayfield.php-docblocker",
+				"bmewburn.vscode-intelephense-client",
+				"mehedidracula.php-namespace-resolver",
+				"pflannery.vscode-versionlens",
+				"redhat.vscode-yaml",
+				"GitHub.vscode-pull-request-github"
+			],
+			"settings": {}
+		}
+	}
+	// "remoteUser": "www-data"
+	// "postCreateCommand": "chown -R 1000:1000 /var/www/html",
+	// "forwardPorts": [],
+	// "runServices": [],
+	// "shutdownAction": "none",
+}

@@ -1,6 +1,10 @@
 name: 'Split Packages'
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
 
 env:
   GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

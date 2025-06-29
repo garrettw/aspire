@@ -1,43 +1,36 @@
 # Aspire PHP Framework
 
-My goal is for Aspire to be the best general-purpose PHP app framework out there.
+Currently targeting: PHP 8.4+
 
-Currently targeting: PHP 5.6+
+Aspire is the working name for my new PHP framework that provides a SOLID foundation
+for building modern web applications. It is designed to be modular, flexible, and
+easy to use, while adhering to the latest best practices in PHP development.
 
-In an age of front-end JavaScript frameworks like Angular, Backbone, React, Vue,
-Ember, ExtJs, and the like, where the code running on the server is just a dumb ReST API,
-I believe there is still a place alongside them for apps that run primarily on
-purpose-built web servers. These apps are not complex; they more closely resemble
-web pages than a piece of software, and a large portion of the web still looks
-and works that way, and will remain that way for the foreseeable future. That's
-not a bad thing. Aspire aims to give those webmasters a leg up.
+## Purpose
+
+I'm building this because:
+- I believe the optimal architecture is a combination of ADR (Action-Domain-Responder) and a middleware pipeline (Mezzio-style);
+- I want a framework that is lightweight and easy to understand, with a minimum of "magic" going on; and
+- I know that the process of building this will be a great learning tool for me.
 
 ## Defining characteristics (in priority order)
+ - Uses off-the-shelf libraries where a suitable one exists
  - Hybrid architecture (ADR + the ViewModel from MVVM)
- - Opinionated regarding use of best practices (I want this to be a model for the community)
- - True, full object-oriented code
- - Complete class modularity
+ - Based around a middleware pipeline
+ - SOLID object-oriented code
  - Standards-compliant code that is easy to read, write, and understand
  - Performant and scalable
  - Behavior-driven development (BDD)
- - User authentication/ACL functionality included as an integral component
- - Small, limited-functionality core that is easily extensible
- - Use of libraries from the community unless a suitable one does not exist
- - Centered around Composer and Github but includes an installer for non-CLI environments
-
-## File structure
-
-- doc/      (auto-generated API documentation)
-- features/ (API behavior specs in plain English)
-- src/      (all core framework code)
-- spec/     (testable code behavior specs)
 
 ## Planning
 
+- Router: Symfony Routing component
+- DI (PSR-11):
+- Middleware:
+
 - ORM (data mapper): Level-2/Maphper
-- Router: crysalead/router
 - Templating engine: Level-2/Transphporm
-- Need to find good authentication and ACL libs
+- Need to find good authentication and RBAC libs
 
 ## Contributing
 

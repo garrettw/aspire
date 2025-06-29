@@ -1,0 +1,4 @@
+suites:
+    aspire_di_suite:
+        namespace: Aspire\Di
+        psr4_prefix: Aspire\Di

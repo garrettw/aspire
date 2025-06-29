@@ -1,0 +1,35 @@
+{
+    "name": "garrettw/aspire-dic",
+    "description": "Dependency Injection Container for the Aspire framework and anyone else who wants to use it",
+    "type": "library",
+    "keywords": ["php", "dic", "ioc", "container", "inversion of control", "dependency injection", "dice"],
+    "homepage": "https://github.com/garrettw/aspire-dic",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Garrett Whitehorn",
+            "homepage": "http://garrettw.net/",
+            "role": "Lead Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "psr/container": "^1.1"
+    },
+    "require-dev": {
+        "behat/behat": "^3.8",
+        "friendsofphp/php-cs-fixer": ">=2.14.0",
+        "phpdocumentor/phpdocumentor": "^3.0",
+        "phpspec/phpspec": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aspire\\Di\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
+        }
+    }
+}

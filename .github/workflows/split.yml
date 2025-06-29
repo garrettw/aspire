@@ -1,0 +1,49 @@
+name: 'Split Packages'
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+jobs:
+  split_packages:
+    runs-on: ubuntu-latest
+    name: 'Split Packages'
+    strategy:
+      matrix:
+        package:
+          -
+            local_path: 'packages/dic'
+            split_repository: 'aspire-dic'
+          -
+            local_path: 'apps/basic-skeleton'
+            split_repository: 'aspire-app-skeleton'
+    steps:
+      - uses: actions/checkout@v2
+      # no tag
+      -
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: danharrin/monorepo-split-github-action@v2.3.0
+        with:
+          package_directory: ${{ matrix.package.local_path }}
+          repository_organization: garrettw
+          repository_name: ${{ matrix.package.split_repository }}
+          branch: main
+          user_name: garrettw
+          user_email: ${{ secrets.COMMIT_EMAIL }}
+      # with tag
+      -
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: danharrin/monorepo-split-github-action@v2.3.0
+        with:
+          tag: ${GITHUB_REF#refs/tags/}
+          package_directory: '${{ matrix.package.local_path }}'
+          repository_organization: garrettw
+          repository_name: ${{ matrix.package.split_repository }}
+          branch: main
+          user_name: garrettw
+          user_email: ${{ secrets.COMMIT_EMAIL }}

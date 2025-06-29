@@ -1,5 +1,61 @@
 {
-  "require-dev": {
-    "symplify/monorepo-builder": "^11.2"
-  }
+    "authors": [
+        {
+            "name": "Garrett Whitehorn",
+            "homepage": "http://garrettw.net/",
+            "role": "Lead Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "psr/container": "^2.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "@dev",
+        "phpstan/phpstan": "^2.1",
+        "roave/security-advisories": "dev-latest",
+        "symplify/monorepo-builder": "^11.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "apps/basic-skeleton/src/",
+            "Aspire\\Di\\": "packages/dic/src/",
+            "Aspire\\Framework\\": "packages/framework/src/"
+        }
+    },
+    "repositories": [
+        {
+            "options": {
+                "symlink": true
+            },
+            "type": "path",
+            "url": "dic"
+        },
+        {
+            "options": {
+                "symlink": true
+            },
+            "type": "path",
+            "url": "packages/dic"
+        },
+        {
+            "options": {
+                "symlink": true
+            },
+            "type": "path",
+            "url": "packages/framework"
+        }
+    ],
+    "scripts": {
+        "monorepo:merge": "monorepo-builder merge",
+        "monorepo:bump": "monorepo-builder bump-interdependency",
+        "monorepo:validate": "monorepo-builder validate",
+        "monorepo:alias": "monorepo-builder package-alias",
+        "monorepo:release": "monorepo-builder release"
+    },
+    "replace": {
+        "garrettw/aspire": "self.version",
+        "garrettw/aspire-app-skeleton": "self.version",
+        "garrettw/aspire-dic": "self.version"
+    }
 }

@@ -13,14 +13,11 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
-        "psr/container": "^1.1"
+        "php": ">=8.4",
+        "psr/container": "^2.0"
     },
     "require-dev": {
-        "behat/behat": "^3.8",
-        "friendsofphp/php-cs-fixer": ">=2.14.0",
-        "phpdocumentor/phpdocumentor": "^3.0",
-        "phpspec/phpspec": "^7.0"
+        "phpspec/phpspec": "@dev"
     },
     "autoload": {
         "psr-4": {

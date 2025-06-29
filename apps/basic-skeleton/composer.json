@@ -1,0 +1,51 @@
+{
+    "name": "garrettw/aspire-app-skeleton",
+    "description": "A basic skeleton app using the Aspire framework.",
+    "type": "project",
+    "keywords": ["php", "aspire", "skeleton", "app"],
+    "license": "MIT",
+    "homepage": "https://github.com/garrettw/aspire-app-skeleton",
+    "authors": [
+        {
+            "name": "Garrett Whitehorn",
+            "homepage": "http://garrettw.net/",
+            "role": "Lead Developer"
+        }
+    ],
+    "require": {
+        "garrettw/aspire": "*",
+        "garrettw/aspire-dic": "*"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../packages/framework",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../packages/dic",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+    "config": {
+      "optimize-autoloader": true,
+      "preferred-install": "dist",
+      "sort-packages": true,
+      "minimum-stability": "dev",
+      "prefer-stable": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
+

@@ -1,22 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aspire\Di;
+
+use Aspire\Di\Exception\ContainerException;
 
 class Config
 {
-    /** @var RuleProvider[] */
-    protected $ruleProviders;
-
-    /** @var bool */
-    protected $autowiring;
-
     /** @var Rule[] */
     protected $rules = [];
 
-    public function __construct(array $ruleProviders = [], bool $autowiring = true)
-    {
-        $this->ruleProviders = $ruleProviders;
-        $this->autowiring = $autowiring;
+    /**
+     * @param RuleProvider[] $ruleProviders
+     * @param bool $autowiring
+     */
+    public function __construct(
+        protected array $ruleProviders = [],
+        protected bool $autowiring = true,
+    ) {
+        foreach ($ruleProviders as $provider) {
+            if (!($provider instanceof RuleProvider)) {
+                throw new \InvalidArgumentException(
+                    'Invalid rule provider: ' . \get_class($provider)
+                );
+            }
+        }
     }
 
     /**
@@ -25,7 +34,7 @@ class Config
      * @return Config
      * @throws Exception\ContainerException on invalid providers/rules or rule collisions
      */
-    public function load()
+    public function load(): static
     {
         foreach ($this->ruleProviders as $provider) {
             $class = \get_class($provider);
@@ -52,9 +61,10 @@ class Config
      * Returns the rule that will be applied to the class $id during make().
      *
      * @param string $id The name of the ruleset to get - can be a class or not
-     * @return array|Rule Rule that applies when instantiating the given name
+     * @return Rule that applies when instantiating the given name
+     * @throws ContainerException
      */
-    public function getRule(string $id)
+    public function getRule(string $id): Rule
     {
         if (!$this->rules) {
             $this->load();
@@ -67,30 +77,38 @@ class Config
         }
         // next, look for a rule where:
         foreach ($this->rules as $key => $rule) {
+            if ($key === '*') {
+                // skip the default rule, we'll return it at the end if nothing else matches
+                continue;
+            }
             $matches = [];
-            if ($key !== '*' // it's not the default rule,
-                && (
-                    ( // its name is a parent class of what we're looking for,
-                        \is_subclass_of($id, $key)
-                        // and it applies to subclasses
-                        && (!isset($rule->inherit) || $rule->inherit === true)
-                    )
-                    // or the id is a matching regex
-                    || (static::isRegex($key) && \preg_match($key, $id, $matches))
+            if (
+                (   // the rule can apply to subclasses
+                    ($rule->inherit === true)
+                    // and its name is a parent class of what we're looking for,
+                    && \is_subclass_of($id, $key)
                 )
+                // or the rule is a regex and the id matches it
+                || (static::isRegex($key) && \preg_match($key, $id, $matches))
             ) {
-                return $matches ? ['rule' => $rule, 'matches' => $matches] : $rule;
+                $rule->matches = $matches;
+                return $rule;
             }
         }
         // if we get here, return the default rule if it's set
-        return (isset($this->rules['*'])) ? $this->rules['*'] : [];
+        return $this->rules['*'] ?? new Rule('empty');
+    }
+
+    public function isAutowiring(): bool
+    {
+        return $this->autowiring;
     }
 
     /**
      * @param string $name
      * @return string lowercased classname without leading backslash
      */
-    protected static function normalizeName(string $name): string
+    protected static function normalizeName($name)
     {
         return \strtolower(\ltrim($name, '\\'));
     }
@@ -99,8 +117,8 @@ class Config
      * @param string $name
      * @return bool
      */
-    protected static function isRegex(string $name): bool
+    protected static function isRegex($name)
     {
-        return ($name[0] === '/' && $name[-1] === '/');
+        return $name[0] === '/' && $name[-1] === '/';
     }
 }

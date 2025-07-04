@@ -4,16 +4,12 @@ namespace spec\Aspire\Di;
 
 use Aspire\Di\Container;
 use Aspire\Di\Config;
+use Aspire\Di\Rule;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class ContainerSpec extends ObjectBehavior
 {
-    function it_is_initializable_without_config()
-    {
-        $this->shouldHaveType(Container::class);
-    }
-
     function it_is_initializable_with_config(Config $config)
     {
         $this->beConstructedWith($config);
@@ -21,8 +17,10 @@ class ContainerSpec extends ObjectBehavior
         $this->shouldHaveType(Container::class);
     }
 
-    public function it_creates_a_basic_object()
+    public function it_creates_a_basic_object(Config $config)
     {
+        $this->beConstructedWith($config);
+
         $a = $this->get('spec\Aspire\Di\NoConstructor');
 
         $a->shouldBeAnInstanceOf('spec\Aspire\Di\NoConstructor');
@@ -30,7 +28,7 @@ class ContainerSpec extends ObjectBehavior
 
     public function it_instantiates_internal_class()
     {
-        $rule = ['constructParams' => ['.']];
+        $rule = new Rule(constructParams: ['.']);
         $config = (new Config())->addRule('DirectoryIterator', $rule);
         $this->beConstructedWith($config);
 

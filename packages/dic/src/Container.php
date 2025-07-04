@@ -37,7 +37,7 @@ class Container implements \Psr\Container\ContainerInterface
      */
     public function get(string $id)
     {
-        return $this->make($id);
+        return $this->make(ltrim($id, '\\'));
     }
 
     /**
@@ -75,10 +75,7 @@ class Container implements \Psr\Container\ContainerInterface
 
         try {
             if (!isset($this->closures[$id])) {
-                $this->closures[$id] = $this->makeClosure(
-                    ltrim($id, '\\'),
-                    $this->config->getRule($id)
-                );
+                $this->closures[$id] = $this->makeClosure($id, $this->config->getRule($id));
             }
             return $this->closures[$id]($params, $share);
         } catch (\Exception $e) {
@@ -88,19 +85,23 @@ class Container implements \Psr\Container\ContainerInterface
     }
 
     /**
-     * Call any callable using the container's autowiring.
+     * Call any callable using the container's dependency resolution.
      *
      * @param callable $callable
      * @param array $params any params you need to explicitly specify
-     * @return mixed the result from the callable
+     * @param ?Rule $rule a rule to apply during parameter resolution
+     * @return mixed the result from calling the callable
+     * @throws ContainerException
      */
-    public function call(callable $callable, array $params = [])
+    public function call(callable $callable, array $params = [], ?Rule $rule = null): mixed
     {
-        if (!$this->autowiring) {
-            return null;
+        try {
+            $reflection = new \ReflectionFunction($callable);
+            $paramsFunc = $this->getParams($reflection, $rule ?? new Rule(\Closure::class));
+            return $callable(...$paramsFunc($params, []));
+        } catch (\ReflectionException $e) {
+            throw new ContainerException("Could not inspect callable: " . $e->getMessage(), $e->getCode(), $e);
         }
-
-        // TODO: incomplete
     }
 
     /**
@@ -123,11 +124,13 @@ class Container implements \Psr\Container\ContainerInterface
          */
         // PHP throws a fatal error when trying to instantiate an interface; detect it and throw an exception instead
         if ($class->isInterface()) {
-            $closure = static function () {
-                throw new \InvalidArgumentException('Cannot instantiate an interface');
+            $closure = static function () use ($class) {
+                throw new \InvalidArgumentException(
+                    "Cannot instantiate interface {$class->name}. "
+                    . "Did you forget to configure a concrete implementation?"
+                );
             };
         } elseif ($paramsFunc) {
-            // Get a closure based on the type of object being created: Shared, normal or constructorless
             $closure = static function (array $args, array $share) use ($class, $paramsFunc) {
                 // This class has dependencies, call $paramsFunc to generate them based on $args and $share
                 return new $class->name(...$paramsFunc($args, $share));
@@ -141,9 +144,18 @@ class Container implements \Psr\Container\ContainerInterface
 
         /**
          * Closure level 2
+         *
+         * If this object is to be a singleton and is not an internal class, skip closure 1
+         * and quietly create the instance without invoking the constructor until dependencies are ready
+         * to avoid cyclic references. But if it is internal, we have to call closure 1 like normal.
          */
         if (!empty($rule->shared)) {
             $closure = function (array $args, array $share) use ($id, $class, $constructor, $paramsFunc, $closure) {
+                if ($id === $this::class) {
+                    // If we're trying to instantiate the container itself, and the container has a shared rule,
+                    // assume we want $this rather than a new container just for the object graph
+                    return $this;
+                }
                 try {
                     // Create the instance without calling the constructor
                     $this->instances[$id] = $class->newInstanceWithoutConstructor();
@@ -151,8 +163,8 @@ class Container implements \Psr\Container\ContainerInterface
                     // This avoids problems with cyclic references
                     $constructor?->invokeArgs($this->instances[$id], $paramsFunc($args, $share));
                 } catch (\ReflectionException $e) {
-                    // Class is internal and cannot be instantiated without calling the constructor
-                    $this->instances[$class->name] = $closure($args, $share); // TODO: normalize name?
+                    // Class is internal and therefore cannot be instantiated without calling the constructor
+                    $this->instances[$class->name] = $closure($args, $share);
                 }
                 return $this->instances[$id];
             };
@@ -160,8 +172,11 @@ class Container implements \Psr\Container\ContainerInterface
 
         /**
          * Closure level 3
+         *
+         * If there are shared instances, create them
+         * and add them to the list of shared instances coming from higher up the object graph;
+         * then call the previous closure
          */
-        // If there are shared instances, create them and merge them with shared instances higher up the object graph
         if ($rule->shareInstances) {
             $closure = function (array $args, array $share) use ($closure, $rule) {
                 foreach ($rule->shareInstances as $instance) {
@@ -173,10 +188,9 @@ class Container implements \Psr\Container\ContainerInterface
 
         /**
          * Closure level 4
+         *
+         * If there are post-construct calls to make, do them after constructing the object
          */
-        // When $rule->call is set, wrap the closure in another closure which will call the required methods
-        // after constructing the object.
-        // By putting this in a closure, the loop is never executed unless call is actually set.
         if ($rule->call) {
             $closure = function (array $args, array $share) use ($closure, $class, $rule, $id) {
                 // Construct the object using the original closure
@@ -186,11 +200,11 @@ class Container implements \Psr\Container\ContainerInterface
                     // Generate the method arguments using getParams() and call the returned closure
                     $params = $this->getParams(
                         $class->getMethod($call[0]),
-                        ['shareInstances' => $rule->shareInstances]
-                    )($this->expand($call[1] ?? []), $share);
+                        new Rule(id: '', shareInstances: $rule->shareInstances)
+                    )($this->expandParams($call[1] ?? []), $share);
                     $return = $object->{$call[0]}(...$params);
                     if (isset($call[2])) {
-                        if ($call[2] === self::CHAIN_CALL) {
+                        if ($call[2] === self::CHAIN_CALL) { // TODO: implement this
                             if (!empty($rule['shared'])) {
                                 $this->instances[$id] = $return;
                             }
@@ -213,29 +227,29 @@ class Container implements \Psr\Container\ContainerInterface
     /**
      * Returns a closure that generates arguments for $method based on $rule and any $params passed into the closure
      *
-     * @param \ReflectionMethod $method The method for which to generate parameters
+     * @param \ReflectionFunctionAbstract $function The function or method for which to generate parameters
      * @param Rule $rule
      * @return \Closure A closure that uses the cached information to generate the arguments for the method
      */
-    protected function getParams($method, $rule)
+    protected function getParams($function, $rule)
     {
         // Cache some information about the parameter in $paramInfo so reflection isn't needed every time
         $paramInfo = [];
-        foreach ($method->getParameters() as $param) {
+        foreach ($function->getParameters() as $param) {
             $type = $param->getType();
             $class = ($type instanceof \ReflectionNamedType && !$type->isBuiltIn()) ? $type->getName() : null;
             $paramInfo[] = [
                 $class,
                 $param,
-                isset($rule['substitutions']) && array_key_exists($class, $rule['substitutions'])
+                isset($rule->substitutions) && array_key_exists($class, $rule->substitutions)
             ];
         }
 
         // Return a closure that uses the cached information to generate the arguments for the method
         return function (array $args, array $share = []) use ($paramInfo, $rule) {
-            // If the rule has constructParams set, construct any classes reference and use them as $args
+            // If the rule has constructParams set, construct any classes referenced and use them as $args
             if ($rule->constructParams) {
-                $args = array_merge($args, $this->expand($rule->constructParams, $share));
+                $args = array_merge($args, $this->expandParams($rule->constructParams, $share));
             }
 
             // Array of matched parameters
@@ -261,7 +275,7 @@ class Container implements \Psr\Container\ContainerInterface
                 elseif ($class) {
                     try {
                         if ($sub) {
-                            $parameters[] = $this->expand($rule['substitutions'][$class], $share, true);
+                            $parameters[] = $this->expandSub($class, $rule->substitutions[$class], $share);
                         } else {
                             $parameters[] = !$param->allowsNull() ? $this->make($class, [], $share) : null;
                         }
@@ -281,7 +295,7 @@ class Container implements \Psr\Container\ContainerInterface
                     }
                 }
                 elseif ($args) {
-                    $parameters[] = $this->expand(array_shift($args));
+                    $parameters[] = $this->expandParams(array_shift($args));
                 }
                 // For variadic parameters, provide remaining $args
                 elseif ($param->isVariadic()) {
@@ -294,5 +308,113 @@ class Container implements \Psr\Container\ContainerInterface
             }
             return $parameters;
         };
+    }
+
+    /**
+     * Looks for Dice::INSTANCE, Dice::GLOBAL or Dice::CONSTANT array keys in $param and when found returns an object based on the value see {@link https:// r.je/dice.html#example3-1}
+     * @param mixed $param Strings and arrays will be processed, everything else is passed through
+     * @param array $share Array of instances from 'shareInstances', required for calls to `make`
+     * @param bool $createFromString
+     * @return mixed
+     */
+    protected function expandParams($param, $share = [], $createFromString = false) {
+        if (is_array($param)) {
+            // If a rule specifies Dice::INSTANCE, look up the relevant instance
+            if (isset($param[self::INSTANCE])) {
+                // Check for 'params' which allows parameters to be sent to the instance when it's created
+                // Either as a callback method or to the constructor of the instance
+                $args = isset($param['params']) ? $this->expandParams($param['params']) : [];
+
+                // Support Dice::INSTANCE by creating/fetching the specified instance
+                if (is_array($param[self::INSTANCE])) {
+                    $param[self::INSTANCE][0] = $this->expandParams($param[self::INSTANCE][0], $share, true);
+                }
+                if (is_callable($param[self::INSTANCE])) {
+                    return call_user_func($param[self::INSTANCE], ...$args);
+                }
+                return $this->make($param[self::INSTANCE], array_merge($args, $share));
+            }
+
+            if (isset($param[self::GLOBAL])) {
+                return $GLOBALS[$param[self::GLOBAL]];
+            }
+
+            if (isset($param[self::CONSTANT])) {
+                return constant($param[self::CONSTANT]);
+            }
+
+            foreach ($param as $name => $value) {
+                $param[$name] = $this->expandParams($value, $share);
+            }
+        }
+
+        return (is_string($param) && $createFromString) ? $this->make($param) : $param;
+    }
+
+    /**
+     * @param string $class
+     * @param callable|string|object $substitution
+     * @param $share
+     * @return mixed
+     * @throws ContainerException
+     * @throws NotFoundException
+     * @throws \ReflectionException
+     */
+    protected function expandSub($class, $substitution, $share)
+    {
+        if (is_callable($substitution)) {
+            // If the substitution is a callable, first we should reflect on its return type to make sure it matches the class
+            if (is_string($substitution) && str_contains($substitution, '::')) {
+                $substitution = explode('::', $substitution, 2);
+            }
+            if (is_array($substitution)) {
+                $reflection = new \ReflectionMethod($substitution[0], $substitution[1]);
+            } else {
+                $reflection = new \ReflectionFunction($substitution);
+            }
+
+            $returnType = $reflection->getReturnType();
+            if ($returnType && !$returnType->isBuiltin() && $returnType->getName() !== $class) {
+                throw new \InvalidArgumentException(
+                    "Substitution callable must return an instance of $class, "
+                    . "but it returns an instance of {$returnType->getName()} instead."
+                );
+            }
+            // We've done as many safety checks as we can, so call it
+            $result = $this->call($substitution, [], null, $share);
+
+            // If there was no return type to check but we got back something bad, throw an exception
+            if (!is_object($result) || !is_a($result, $class)) {
+                throw new \InvalidArgumentException(
+                    "Substitution callable must return an instance of $class, "
+                    . "but it returned an instance of " . get_debug_type($result) . " instead."
+                );
+            }
+        }
+
+        if (is_string($substitution) && $this->has($substitution)) {
+            // it's a class name or named instance
+            return $this->make($substitution, [], $share);
+        }
+
+        // it's not something we need to handle, so pass through
+        return $substitution;
+    }
+
+    /**
+     * Looks through the array $search for any object that can be used to fulfil $param
+     * The original array $search is modified so must be passed by reference.
+     * @param \ReflectionParameter $param The parameter to match against
+     * @param ?string $class The class name to match against, or null if no class is type hinted
+     * @param array $search The array of arguments to search through
+     */
+    protected function matchParam($param, $class, &$search) {
+        foreach ($search as $i => $arg) {
+            if ($class && ($arg instanceof $class || ($arg === null && $param->allowsNull()))) {
+                // The argument matched, return it and remove it from $search so it won't wrongly match another parameter
+                return array_splice($search, $i, 1)[0];
+            }
+        }
+        return false;
     }
 }

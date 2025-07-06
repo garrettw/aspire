@@ -1,36 +1,55 @@
-# The Aspire Dependency Injection Container -- part of the Aspire Framework (eventually)
+# The Aspire Dependency Injection Container -- part of the Aspire Framework (WIP)
 
-For now, this library is based heavily on [Dice](https://github.com/Level-2/Dice)
-because I've contributed to it before and have a good understanding of its workings.
+This is an IoC/DI container library for PHP, usable on its own or as part of the Aspire Framework.
 
-However, my current goal is to catalogue the details of many DIC libraries,
-lay out my opinions on each, and synthesize my favorite parts of all of them into
-my ideal DIC library.
-This is currently underway. See [this repo's wiki](https://github.com/garrettw/aspire-dic/wiki)
-for more info.
+## Design principles
+- Respect SOLID principles, especially SRP, more than any other DIC library
+- Use a minimum of "magic", so that it is easy to understand
+- Be powerful, flexible, and feature-rich, yet also fast and efficient
+- Support a modular/layered architecture, allowing for simplified configuration by multiple packages
+- Build on the work of [Level-2/Dice](https://github.com/Level-2/Dice), updating it for modern PHP and adding a few
+  features from other libraries
 
-## Desired features
-This is a list of the features I have decided I want to be in this.
-* Auto-wiring by default but allow it to be disabled
-* Custom ctor params in config and at create-time
-* Explicit class/interface substitutions
-* Optional rule inheritance (Dice)
-* Object creation delegation (AmPHP does it better); is this a good factory replacement?
-* Internal function memoization, avoiding internal typehints, and other speed enhancements (Dice)
-* Share an instance only within part of the object tree (Dice)
-* In order to allow for multiple instances of one class to be shared:
-  * Dice makes up names for instances which you then use in the configuration for "parent" classes (ones farther up the object tree).
-  * AmPHP uses delegation functions and param name sniffing to do the same thing; I feel like this might be better.
-* Dynamic rule adjustment (Dice)
-* Explicitly reference container's instance of a class in configuration (Dice)
-* Pass container into instances (maybe)
-* Specifying custom ctor params using the param name, not just position (AmPHP)
-* Able to perform auto-wiring on any PHP callable (AmPHP)
-* Configure container using a separate object, pursuant to SRP
-* A way to find the correct classnames based on applying a formula to interface names
-* A way for modular code to provide rules/definitions to the container with a common interface (such as Joomla's service providers)
-* Child containers for managing resolution scope (Joomla); children can selectively override definitions without affecting parent's definitions
+## Status
+Still working on the architecture.
+Previously I started to catalogue the details of many DIC libraries in order to
+lay out my opinions on each and synthesize my favorite parts of all of them into
+my ideal DIC library. See [this repo's wiki](https://github.com/garrettw/aspire-dic/wiki).
 
-## Undesired features
-* explicit setter injection
-* A self-binding global container instance (Cobalt)
+But now with the advent of GenAI chatbots, I'm letting computers do that research
+for me so I can spend more time on decision-making and writing code.
+
+## Inspiration
+The following libraries have aspects I really respect and plan to incorporate here:
+- [Dice](https://github.com/Level-2/Dice)
+- [AmPHP Injector](https://github.com/amphp/injector)
+- [Laminas DI](https://github.com/laminas/laminas-di)
+- [Laravel's container](https://github.com/illuminate/container)
+- [The PHP League's Container](https://github.com/thephpleague/container)
+- [Symfony DI](https://github.com/symfony/dependency-injection)
+- [Yii 3 DI](https://github.com/yiisoft/di)
+
+## Characteristics
+- The container class is merely a repository and does not configure itself. A configuration is supplied to the container.
+- Configuration can be supplied by multiple providers, in a modular fashion.
+- Uses closures extensively internally and for certain parts of configuration, enabling great flexibility and performance.
+- Autowiring can be used but is not required.
+- Object creation can be delegated to a user-supplied callable, allowing for custom instantiation logic.
+- Like Dice, the internal API eschews typehints in favor of docblocks for performance reasons, but don't worry;
+the public API is typehinted for good DX.
+- Scalar constructor parameters can be specified in configuration, by position or by parameter name.
+- Arbitrary identifiers can be used to refer to instances in configuration, allowing for multiple instances of the same class.
+- Like most DI containers, classes/interfaces can have child classes/implementations substituted in their place by configuration.
+- Configuration definitions with class/interface identifiers will apply to all child classes/implementations, unless
+disabled on a per-definition basis.
+- Configuration definition identifiers can be regex patterns, allowing for flexible matching of class/interface names.
+- Scoped singletons can be created, allowing for instances to be shared within a specific part of the object tree.
+- The container can inject itself into instances. Of course, this should be used carefully and sparingly, but sometimes it is truly needed.
+- Any callable can take advantage of the container's autowiring and configuration.
+- After instantiation, the container can execute callables on objects for extra initialization logic or decoration, with the
+latter allowing replacement of the original instance
+
+## Won't Do
+* Explicit setter injection
+* Property injection
+* A self-binding global container instance

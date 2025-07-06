@@ -1,0 +1,10 @@
+{
+    "supports": [
+        "http"
+    ],
+    "handles": [
+        "page"
+    ],
+    "default-type": "page",
+    "default-resid": "home"
+}

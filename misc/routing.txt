@@ -1,0 +1,20 @@
+dynamic vs static routes
+Router->map($route) { return new Route; }
+      ->addRoute($rule)
+class Route {props v, m, c; construct, get}
+
+
+
+/events/2015/back-to-work/attendees/search
+
+EventsController handles the route 'events/$Year/$Name' with the event() method
+The event() method returns a DataObject which represents that single event.
+Because there is still more URL content to process, this object is not rendered as HTML via it's templates, but instead used as a controller
+Event_Controller handles the route 'attendees' with the attendees() method
+The attendees() method returns a DataList that represents all the people that attended that event
+Because there is still more URL content to process, the DataList is used as a controller
+DataList_Controller handles the route 'search' with the search() method
+The search() method returns a search form object, or search results if a filter was provided
+Because there is no more URL content to process, the search form is rendered using it's templates. It provides a Layout template,
+but not a Page template, so the rendering engine looks higher up the controller hierarchy. It finds that the Event object can
+return a Page template, so it uses that to wrap around the search form's Layout and returns the response to the user

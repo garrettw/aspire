@@ -1,0 +1,4 @@
+suites:
+    aspire_suite:
+        namespace: Aspire
+        psr4_prefix: Aspire

@@ -1,0 +1,10 @@
+{
+    "supports": [
+        "cli",
+        "http"
+    ],
+    "handles": [
+        "exampletype1",
+        "exampletype2"
+    ]
+}

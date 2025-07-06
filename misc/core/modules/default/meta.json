@@ -1,0 +1,7 @@
+{
+    "module-redirect": {
+        "all": "",
+        "cli": "",
+        "http": "static"
+    }
+}

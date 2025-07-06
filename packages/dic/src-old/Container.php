@@ -22,7 +22,7 @@ class Container implements \Psr\Container\ContainerInterface
     /** @var object[] shared objects we've created */
     protected $instances = [];
 
-    public function __construct(protected Config $config) {}
+    public function __construct(protected Config $config, protected FactoryFactory $ff) {}
 
     /**
      * The basic PSR-11 function to retrieve a thing from the container.
@@ -89,15 +89,15 @@ class Container implements \Psr\Container\ContainerInterface
      *
      * @param callable $callable
      * @param array $params any params you need to explicitly specify
-     * @param ?Rule $rule a rule to apply during parameter resolution
+     * @param ?Definition $rule a rule to apply during parameter resolution
      * @return mixed the result from calling the callable
      * @throws ContainerException
      */
-    public function call(callable $callable, array $params = [], ?Rule $rule = null): mixed
+    public function call(callable $callable, array $params = [], ?Definition $rule = null): mixed
     {
         try {
             $reflection = new \ReflectionFunction($callable);
-            $paramsFunc = $this->getParams($reflection, $rule ?? new Rule(\Closure::class));
+            $paramsFunc = $this->getParams($reflection, $rule ?? new Definition(\Closure::class));
             return $callable(...$paramsFunc($params, []));
         } catch (\ReflectionException $e) {
             throw new ContainerException("Could not inspect callable: " . $e->getMessage(), $e->getCode(), $e);
@@ -106,7 +106,7 @@ class Container implements \Psr\Container\ContainerInterface
 
     /**
      * @param string $id
-     * @param Rule $rule
+     * @param Definition $rule
      * @return \Closure A closure that will create the object when called
      * @throws \ReflectionException
      */
@@ -200,7 +200,7 @@ class Container implements \Psr\Container\ContainerInterface
                     // Generate the method arguments using getParams() and call the returned closure
                     $params = $this->getParams(
                         $class->getMethod($call[0]),
-                        new Rule(id: '', shareInstances: $rule->shareInstances)
+                        new Definition(id: '', shareInstances: $rule->shareInstances)
                     )($this->expandParams($call[1] ?? []), $share);
                     $return = $object->{$call[0]}(...$params);
                     if (isset($call[2])) {
@@ -228,7 +228,7 @@ class Container implements \Psr\Container\ContainerInterface
      * Returns a closure that generates arguments for $method based on $rule and any $params passed into the closure
      *
      * @param \ReflectionFunctionAbstract $function The function or method for which to generate parameters
-     * @param Rule $rule
+     * @param Definition $rule
      * @return \Closure A closure that uses the cached information to generate the arguments for the method
      */
     protected function getParams($function, $rule)

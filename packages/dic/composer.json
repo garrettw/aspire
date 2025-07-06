@@ -12,6 +12,9 @@
             "role": "Lead Developer"
         }
     ],
+    "provide": {
+        "psr/container-implementation": "1.0.0"
+    },
     "require": {
         "php": ">=8.4",
         "psr/container": "^2.0"

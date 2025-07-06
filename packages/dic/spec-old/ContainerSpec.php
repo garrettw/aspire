@@ -2,9 +2,9 @@
 
 namespace spec\Aspire\Di;
 
-use Aspire\Di\Container;
+use Aspire\Di\CompositeContainer;
 use Aspire\Di\Config;
-use Aspire\Di\Rule;
+use Aspire\Di\Definition;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -14,7 +14,7 @@ class ContainerSpec extends ObjectBehavior
     {
         $this->beConstructedWith($config);
 
-        $this->shouldHaveType(Container::class);
+        $this->shouldHaveType(CompositeContainer::class);
     }
 
     public function it_creates_a_basic_object(Config $config)
@@ -28,7 +28,7 @@ class ContainerSpec extends ObjectBehavior
 
     public function it_instantiates_internal_class()
     {
-        $rule = new Rule(constructParams: ['.']);
+        $rule = new Definition(constructParams: ['.']);
         $config = (new Config())->addRule('DirectoryIterator', $rule);
         $this->beConstructedWith($config);
 

@@ -2,7 +2,7 @@
 
 namespace Aspire\Di;
 
-interface RuleProvider
+interface DefinitionProvider
 {
     public function rules();
 }

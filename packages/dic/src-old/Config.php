@@ -8,11 +8,11 @@ use Aspire\Di\Exception\ContainerException;
 
 class Config
 {
-    /** @var Rule[] */
+    /** @var Definition[] */
     protected $rules = [];
 
     /**
-     * @param RuleProvider[] $ruleProviders
+     * @param DefinitionProvider[] $ruleProviders
      * @param bool $autowiring
      */
     public function __construct(
@@ -20,7 +20,7 @@ class Config
         protected bool $autowiring = true,
     ) {
         foreach ($ruleProviders as $provider) {
-            if (!($provider instanceof RuleProvider)) {
+            if (!($provider instanceof DefinitionProvider)) {
                 throw new \InvalidArgumentException(
                     'Invalid rule provider: ' . \get_class($provider)
                 );
@@ -38,7 +38,7 @@ class Config
     {
         foreach ($this->ruleProviders as $provider) {
             $class = \get_class($provider);
-            if (!($provider instanceof RuleProvider)) {
+            if (!($provider instanceof DefinitionProvider)) {
                 throw new Exception\ContainerException("Invalid rule provider: instance of $class");
             }
 
@@ -61,10 +61,10 @@ class Config
      * Returns the rule that will be applied to the class $id during make().
      *
      * @param string $id The name of the ruleset to get - can be a class or not
-     * @return Rule that applies when instantiating the given name
+     * @return Definition that applies when instantiating the given name
      * @throws ContainerException
      */
-    public function getRule(string $id): Rule
+    public function getRule(string $id): Definition
     {
         if (!$this->rules) {
             $this->load();
@@ -96,7 +96,7 @@ class Config
             }
         }
         // if we get here, return the default rule if it's set
-        return $this->rules['*'] ?? new Rule('empty');
+        return $this->rules['*'] ?? new Definition('empty');
     }
 
     public function isAutowiring(): bool

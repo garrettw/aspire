@@ -1,8 +1,8 @@
-# Aspire PHP Framework
+# Outboard Framework
 
 Currently targeting: PHP 8.4+
 
-Aspire is the working name for my new PHP framework that provides a SOLID foundation
+Outboard is the working name for my new PHP framework that provides a SOLID foundation
 for building modern web applications. It is designed to be modular, flexible, and
 easy to use, while adhering to the latest best practices in PHP development.
 

@@ -1,9 +1,9 @@
 {
-    "name": "garrettw/aspire-dic",
-    "description": "Dependency Injection Container for the Aspire framework and anyone else who wants to use it",
+    "name": "outboardphp/di",
+    "description": "Dependency Injection Container for the Outboard framework and anyone else who wants to use it",
     "type": "library",
     "keywords": ["php", "dic", "ioc", "container", "inversion of control", "dependency injection", "dice"],
-    "homepage": "https://github.com/garrettw/aspire-dic",
+    "homepage": "https://github.com/outboardphp/di",
     "license": "MIT",
     "authors": [
         {
@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Aspire\\Di\\": "src/"
+            "Outboard\\Di\\": "src/"
         }
     },
     "config": {

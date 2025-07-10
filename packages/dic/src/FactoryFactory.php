@@ -1,6 +1,6 @@
 <?php
 
-namespace Aspire\Di;
+namespace Outboard\Di;
 
 class FactoryFactory
 {

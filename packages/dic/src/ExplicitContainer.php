@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Aspire\Di;
+namespace Outboard\Di;
 
-use Aspire\Di\Exception\ContainerException;
-use Aspire\Di\Exception\NotFoundException;
+use Outboard\Di\Exception\ContainerException;
+use Outboard\Di\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 

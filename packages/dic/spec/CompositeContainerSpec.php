@@ -1,10 +1,10 @@
 <?php
 
-namespace spec\Aspire\Di;
+namespace spec\Outboard\Di;
 
-use Aspire\Di\CompositeContainer;
-use Aspire\Di\Exception\ContainerException;
-use Aspire\Di\Exception\NotFoundException;
+use Outboard\Di\CompositeContainer;
+use Outboard\Di\Exception\ContainerException;
+use Outboard\Di\Exception\NotFoundException;
 use PhpSpec\ObjectBehavior;
 
 class CompositeContainerSpec extends ObjectBehavior

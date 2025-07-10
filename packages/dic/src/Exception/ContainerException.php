@@ -1,6 +1,6 @@
 <?php
 
-namespace Aspire\Di\Exception;
+namespace Outboard\Di\Exception;
 
 class ContainerException extends \Exception
     implements \Psr\Container\ContainerExceptionInterface

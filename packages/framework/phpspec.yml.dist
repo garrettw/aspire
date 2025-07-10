@@ -1,4 +1,4 @@
 suites:
-    aspire_suite:
-        namespace: Aspire
-        psr4_prefix: Aspire
+    outboard_suite:
+        namespace: Outboard
+        psr4_prefix: Outboard

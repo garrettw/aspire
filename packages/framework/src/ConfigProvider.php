@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Aspire\Framework;
+namespace Outboard\Framework;
 
-class ConfigProvider implements \Aspire\Di\RuleProvider
+class ConfigProvider implements \Outboard\Di\RuleProvider
 {
     public function rules()
     {

@@ -1,6 +1,6 @@
-# The Aspire Dependency Injection Container -- part of the Aspire Framework (WIP)
+# Outboard's Dependency Injection Container
 
-This is an IoC/DI container library for PHP, usable on its own or as part of the Aspire Framework.
+This is an IoC/DI container library for PHP, usable on its own or as part of the Outboard Framework.
 
 ## Design principles
 - Respect SOLID principles, especially SRP, more than any other DIC library
@@ -14,7 +14,7 @@ This is an IoC/DI container library for PHP, usable on its own or as part of the
 Still working on the architecture.
 Previously I started to catalogue the details of many DIC libraries in order to
 lay out my opinions on each and synthesize my favorite parts of all of them into
-my ideal DIC library. See [this repo's wiki](https://github.com/garrettw/aspire-dic/wiki).
+my ideal DIC library. See [this repo's wiki](https://github.com/outboardphp/di/wiki).
 
 But now with the advent of GenAI chatbots, I'm letting computers do that research
 for me so I can spend more time on decision-making and writing code.
@@ -22,11 +22,15 @@ for me so I can spend more time on decision-making and writing code.
 ## Inspiration
 The following libraries have aspects I really respect and plan to incorporate here:
 - [Dice](https://github.com/Level-2/Dice)
-- [AmPHP Injector](https://github.com/amphp/injector)
+- [Aura.Di](https://github.com/auraphp/Aura.Di)
+- [Auryn](https://github.com/rdlowrey/auryn)
+- [Caplet](https://github.com/pmjones/caplet)
+- [Capsule DI](https://github.com/capsulephp/di)
 - [Laminas DI](https://github.com/laminas/laminas-di)
 - [Laravel's container](https://github.com/illuminate/container)
 - [The PHP League's Container](https://github.com/thephpleague/container)
 - [Symfony DI](https://github.com/symfony/dependency-injection)
+- [Unbox](https://github.com/mindplay-dk/unbox)
 - [Yii 3 DI](https://github.com/yiisoft/di)
 
 ## Characteristics
@@ -50,6 +54,6 @@ disabled on a per-definition basis.
 latter allowing replacement of the original instance
 
 ## Won't Do
-* Explicit setter injection
-* Property injection
-* A self-binding global container instance
+- Explicit setter injection
+- Property injection
+- A self-binding global container instance

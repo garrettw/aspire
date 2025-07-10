@@ -4,7 +4,7 @@
 	"dockerComposeFile": [
 		"../docker-compose.yml"
 	],
-	"service": "aspire",
+	"service": "outboard",
 	"workspaceFolder": "/var/www/html",
 	"customizations": {
 		"vscode": {

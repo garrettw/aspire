@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use Aspire\Di\RuleProvider;
+use Outboard\Di\RuleProvider;
 
 class ConfigProvider implements RuleProvider
 {

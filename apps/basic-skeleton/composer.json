@@ -1,10 +1,10 @@
 {
-    "name": "garrettw/aspire-app-skeleton",
-    "description": "A basic skeleton app using the Aspire framework.",
+    "name": "outboardphp/basic-app-skeleton",
+    "description": "A basic skeleton app using the Outboard framework.",
     "type": "project",
-    "keywords": ["php", "aspire", "skeleton", "app"],
+    "keywords": ["php", "outboard", "skeleton", "app"],
     "license": "MIT",
-    "homepage": "https://github.com/garrettw/aspire-app-skeleton",
+    "homepage": "https://github.com/outboardphp/basic-app-skeleton",
     "authors": [
         {
             "name": "Garrett Whitehorn",
@@ -13,8 +13,8 @@
         }
     ],
     "require": {
-        "garrettw/aspire": "*",
-        "garrettw/aspire-dic": "*"
+        "outboardphp/outboard": "*",
+        "outboardphp/di": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"

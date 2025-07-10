@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aspire\Framework;
+namespace Outboard\Framework;
 
 use Psr\Container\ContainerInterface;
 

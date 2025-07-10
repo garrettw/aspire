@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Aspire\Di;
+namespace Outboard\Di;
 
 class DefinitionBuilder
 {

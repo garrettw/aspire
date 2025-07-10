@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Aspire\Di;
+namespace spec\Outboard\Di;
 
-use Aspire\Di\ExplicitContainer;
+use Outboard\Di\ExplicitContainer;
 use PhpSpec\ObjectBehavior;
 
 class ExplicitContainerSpec extends ObjectBehavior

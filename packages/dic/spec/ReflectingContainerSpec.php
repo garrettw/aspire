@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Aspire\Di;
+namespace spec\Outboard\Di;
 
-use Aspire\Di\ReflectingContainer;
+use Outboard\Di\ReflectingContainer;
 use PhpSpec\ObjectBehavior;
 
 class ReflectingContainerSpec extends ObjectBehavior

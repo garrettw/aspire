@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\Aspire;
+namespace spec\Outboard;
 
-use Aspire\Framework;
+use Outboard\Framework;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 

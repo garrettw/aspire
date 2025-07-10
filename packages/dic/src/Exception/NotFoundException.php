@@ -1,6 +1,6 @@
 <?php
 
-namespace Aspire\Di\Exception;
+namespace Outboard\Di\Exception;
 
 class NotFoundException extends ContainerException
     implements \Psr\Container\NotFoundExceptionInterface

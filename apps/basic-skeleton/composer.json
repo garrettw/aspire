@@ -3,7 +3,7 @@
     "description": "A basic skeleton app using the Outboard framework.",
     "type": "project",
     "keywords": ["php", "outboard", "skeleton", "app"],
-    "license": "MIT",
+    "license": "Unlicense",
     "homepage": "https://github.com/outboardphp/basic-app-skeleton",
     "authors": [
         {

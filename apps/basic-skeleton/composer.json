@@ -8,12 +8,12 @@
     "authors": [
         {
             "name": "Garrett Whitehorn",
-            "homepage": "http://garrettw.net/",
+            "homepage": "https://garrettw.net/",
             "role": "Lead Developer"
         }
     ],
     "require": {
-        "outboardphp/outboard": "*",
+        "outboardphp/framework": "*",
         "outboardphp/di": "*"
     },
     "require-dev": {

@@ -18,19 +18,11 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "apps/basic-skeleton/src/",
             "Outboard\\Di\\": "packages/dic/src/",
             "Outboard\\Framework\\": "packages/framework/src/"
         }
     },
     "repositories": [
-        {
-            "options": {
-                "symlink": true
-            },
-            "type": "path",
-            "url": "dic"
-        },
         {
             "options": {
                 "symlink": true
@@ -54,8 +46,7 @@
         "monorepo:release": "monorepo-builder release"
     },
     "replace": {
-        "outboardphp/outboard": "self.version",
-        "outboardphp/basic-app-skeleton": "self.version",
+        "outboardphp/framework": "self.version",
         "outboardphp/di": "self.version"
     }
 }

@@ -1,6 +1,0 @@
-{
-    "TwAutoloadRule": {
-        "namespace": "/(Talkwork|Dice)/i",
-        "includePath": "lib"
-    }
-}

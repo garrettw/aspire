@@ -6,7 +6,7 @@ namespace Outboard\Di;
 
 use Psr\Container\ContainerInterface;
 
-interface ComposableContainer
+interface ComposableContainer extends ContainerInterface
 {
     public function setParent(ContainerInterface $container): void;
 }
